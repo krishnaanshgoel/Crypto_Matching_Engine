@@ -157,3 +157,11 @@ async def order_feed(websocket: WebSocket, symbol: str):
     finally:
         active_connections["orders"].discard(websocket)
         engine.unsubscribe_orders(websocket, symbol)
+
+
+@router.websocket("/ws/test")
+async def test_socket(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        await websocket.send_text("Hello from server")
+        await asyncio.sleep(1)

@@ -1,5 +1,5 @@
 from decimal import Decimal
-from typing import Dict, List, Optional, Set, Callable, Any
+from typing import Dict, List, Optional, Set, Callable, Any, Tuple
 from datetime import datetime
 from collections import defaultdict
 import json
@@ -10,6 +10,15 @@ from fastapi import WebSocket
 from engine.base_models import Order, OrderSide, OrderType
 from engine.models import Trade, BBO
 from engine.order_book import OrderBook
+
+# Global dictionary to store engine instances
+engines = {}
+
+def get_or_create_engine(symbol: str) -> OrderBook:
+    """Get or create an OrderBook instance for the given symbol."""
+    if symbol not in engines:
+        engines[symbol] = OrderBook(symbol)
+    return engines[symbol]
 
 class MatchingEngine:
     def __init__(self):
@@ -64,7 +73,8 @@ class MatchingEngine:
                     price=trade_price,
                     quantity=trade_quantity,
                     buy_order_id=order.id,
-                    sell_order_id=matching_order.id
+                    sell_order_id=matching_order.id,
+                    side=OrderSide.BUY
                 )
                 trades.append(trade)
 
@@ -94,7 +104,8 @@ class MatchingEngine:
                     price=trade_price,
                     quantity=trade_quantity,
                     buy_order_id=matching_order.id,
-                    sell_order_id=order.id
+                    sell_order_id=order.id,
+                    side=OrderSide.SELL
                 )
                 trades.append(trade)
 
@@ -136,7 +147,8 @@ class MatchingEngine:
                     price=trade_price,
                     quantity=trade_quantity,
                     buy_order_id=order.id,
-                    sell_order_id=matching_order.id
+                    sell_order_id=matching_order.id,
+                    side=OrderSide.BUY
                 )
                 trades.append(trade)
 
@@ -166,7 +178,8 @@ class MatchingEngine:
                     price=trade_price,
                     quantity=trade_quantity,
                     buy_order_id=matching_order.id,
-                    sell_order_id=order.id
+                    sell_order_id=order.id,
+                    side=OrderSide.SELL
                 )
                 trades.append(trade)
 
@@ -214,7 +227,8 @@ class MatchingEngine:
                     price=trade_price,
                     quantity=trade_quantity,
                     buy_order_id=order.id,
-                    sell_order_id=matching_order.id
+                    sell_order_id=matching_order.id,
+                    side=OrderSide.BUY
                 )
                 trades.append(trade)
 
@@ -244,7 +258,8 @@ class MatchingEngine:
                     price=trade_price,
                     quantity=trade_quantity,
                     buy_order_id=matching_order.id,
-                    sell_order_id=order.id
+                    sell_order_id=order.id,
+                    side=OrderSide.SELL
                 )
                 trades.append(trade)
 
@@ -307,7 +322,8 @@ class MatchingEngine:
                     price=trade_price,
                     quantity=trade_quantity,
                     buy_order_id=order.id,
-                    sell_order_id=matching_order.id
+                    sell_order_id=matching_order.id,
+                    side=OrderSide.BUY
                 )
                 trades.append(trade)
 
@@ -353,7 +369,8 @@ class MatchingEngine:
                     price=trade_price,
                     quantity=trade_quantity,
                     buy_order_id=matching_order.id,
-                    sell_order_id=order.id
+                    sell_order_id=order.id,
+                    side=OrderSide.SELL
                 )
                 trades.append(trade)
 
@@ -513,3 +530,5 @@ class MatchingEngine:
         if symbol not in self.order_books:
             self.order_books[symbol] = OrderBook(symbol)
         return self.order_books[symbol]
+
+__all__ = ['OrderBook', 'MatchingEngine', 'get_or_create_engine']

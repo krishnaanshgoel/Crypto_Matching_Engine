@@ -15,34 +15,104 @@
 #     }
 
 
-from fastapi import APIRouter, HTTPException
-from typing import Dict, Optional
+from fastapi import APIRouter, HTTPException, Depends
+from typing import List, Dict, Optional
 from decimal import Decimal
 from datetime import datetime
+import uuid
 
-from engine.base_models import Order, OrderSide
-from engine.matching_engine import get_or_create_engine
-from schemas import OrderRequest
+from engine.base_models import Order, OrderSide, OrderType
+from engine.matching_engine import get_or_create_engine, MatchingEngine, OrderBook
+from engine.models import Trade
+from schemas.order import OrderRequest
 from fastapi.responses import JSONResponse
 
 router = APIRouter()
 
-# NOTE: Set symbol explicitly (you can also refactor to support multiple symbols)
-order_book = OrderBook(symbol="BTC-USDT")
+# Initialize matching engine
+matching_engine = MatchingEngine()
 
-@router.post("/submit")
-async def submit_order(order_data: OrderRequest):
-    order_dict = order_data.dict()
-    order = Order.create(order_dict)
-    engine = get_or_create_engine()
-    trades = await engine.process_order(order)
+# Initialize order book for BTC-USDT
+order_book = get_or_create_engine("BTC-USDT")
 
-    return {
-        "order_id": order.id,
-        "status": order.status,
-        "filled_quantity": order.filled_quantity,
-        "trades": [t.to_dict() for t in trades]
-    }
+@router.post("/orders")
+async def create_order(order_request: OrderRequest):
+    """Create a new order."""
+    try:
+        # Convert request to Order object
+        order = Order(
+            id=order_request.id,
+            symbol=order_request.symbol,
+            side=OrderSide[order_request.side],
+            order_type=OrderType[order_request.order_type],
+            quantity=Decimal(str(order_request.quantity)),
+            price=Decimal(str(order_request.price)) if order_request.price else None,
+            timestamp=datetime.utcnow()
+        )
+        
+        # Add order to matching engine
+        trades = order_book.add_order(order)
+        
+        return {
+            "order_id": order.id,
+            "status": "FILLED" if not order.quantity else "PARTIALLY_FILLED",
+            "trades": [trade.dict() for trade in trades]
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/pending-orders/{symbol}")
+async def get_pending_orders(symbol: str):
+    """Get pending orders for a symbol."""
+    try:
+        # Get the order book for the symbol
+        book = get_or_create_engine(symbol)
+        
+        # Get bids and asks
+        bids = []
+        for price, orders in book.bids.items():
+            for order in orders:
+                bids.append({
+                    "id": order.id,
+                    "price": float(price),
+                    "quantity": float(order.quantity),
+                    "timestamp": order.timestamp.isoformat()
+                })
+        
+        asks = []
+        for price, orders in book.asks.items():
+            for order in orders:
+                asks.append({
+                    "id": order.id,
+                    "price": float(price),
+                    "quantity": float(order.quantity),
+                    "timestamp": order.timestamp.isoformat()
+                })
+        
+        return {
+            "symbol": symbol,
+            "bids": sorted(bids, key=lambda x: x["price"], reverse=True),
+            "asks": sorted(asks, key=lambda x: x["price"])
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/trades/{symbol}")
+async def get_recent_trades(symbol: str, limit: int = 100):
+    """Get recent trades for a symbol."""
+    try:
+        # Get the order book for the symbol
+        book = get_or_create_engine(symbol)
+        
+        # Get recent trades
+        trades = book.trades[-limit:]
+        
+        return {
+            "symbol": symbol,
+            "trades": [trade.dict() for trade in trades]
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @router.get("/market-data/{symbol}/depth")
 async def get_order_book_depth(symbol: str, depth: Optional[int] = 10) -> Dict:

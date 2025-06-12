@@ -13,6 +13,7 @@ class Trade(BaseModel):
     timestamp: datetime = Field(default_factory=datetime.utcnow)
     buy_order_id: Optional[str] = None
     sell_order_id: Optional[str] = None
+    side:OrderSide
 
     class Config:
         json_encoders = {
