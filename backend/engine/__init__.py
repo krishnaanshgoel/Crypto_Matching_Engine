@@ -1,0 +1,3 @@
+"""
+Cryptocurrency matching engine package.
+"""
