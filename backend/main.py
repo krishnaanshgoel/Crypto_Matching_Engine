@@ -1,9 +1,14 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+import os
 from api.rest import router as api_router
 from api.websocket import router as ws_router
 
-app = FastAPI()
+# Load environment variables
+load_dotenv()
+
+app = FastAPI(title="Matching Engine API")
 
 # Configure CORS with more specific settings
 app.add_middleware(
@@ -16,7 +21,7 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(api_router, prefix="/api")
+app.include_router(api_router, prefix="/api/v1")
 app.include_router(ws_router, prefix="/api")
 
 @app.get("/")

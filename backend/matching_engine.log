@@ -22,3 +22,54 @@
 2025-06-14 12:09:49,715 - engine.matching_engine - INFO - Added remaining quantity of order c284b226-eb74-4c80-8cef-7e9c32889fd1 to order book
 2025-06-14 12:09:49,716 - engine.matching_engine - INFO - Broadcasting updates for order c284b226-eb74-4c80-8cef-7e9c32889fd1
 2025-06-14 12:09:49,716 - engine.matching_engine - INFO - Order c284b226-eb74-4c80-8cef-7e9c32889fd1 processing complete. Generated 0 trades
+2025-06-14 12:19:37,236 - engine.redis_service - ERROR - Failed to connect to Redis: Error 10061 connecting to localhost:6379. No connection could be made because the target machine actively refused it.
+2025-06-14 12:20:38,057 - engine.matching_engine - INFO - MatchingEngine initialized
+2025-06-14 12:20:40,346 - engine.matching_engine - INFO - MatchingEngine initialized
+2025-06-14 13:31:04,002 - engine.redis_persistence - INFO - Redis connection initialized
+2025-06-14 13:31:04,003 - engine.matching_engine - INFO - MatchingEngine initialized
+2025-06-14 13:32:06,396 - engine.matching_engine - INFO - Processing new order 589e1b50-3b07-4a66-ae98-5ab49acf45d7 of type OrderType.LIMIT for BTC_USD
+2025-06-14 13:32:06,397 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-14 13:32:06,400 - engine.matching_engine - INFO - Processing remaining quantity for order 589e1b50-3b07-4a66-ae98-5ab49acf45d7
+2025-06-14 13:32:06,405 - engine.matching_engine - INFO - Added remaining quantity of order 589e1b50-3b07-4a66-ae98-5ab49acf45d7 to order book
+2025-06-14 13:32:09,002 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-14 13:32:09,003 - engine.matching_engine - INFO - Broadcasting updates for order 589e1b50-3b07-4a66-ae98-5ab49acf45d7
+2025-06-14 13:32:09,005 - engine.matching_engine - INFO - Order 589e1b50-3b07-4a66-ae98-5ab49acf45d7 processing complete. Generated 0 trades
+2025-06-14 13:34:24,263 - engine.redis_persistence - INFO - Redis connection initialized
+2025-06-14 13:34:24,264 - engine.matching_engine - INFO - MatchingEngine initialized
+2025-06-14 13:34:38,664 - engine.matching_engine - INFO - Processing new order 28f8af13-f08b-42da-b865-71ef6eb8b8df of type OrderType.STOP_LIMIT for BTC_USD
+2025-06-14 13:34:38,666 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-14 13:34:38,667 - engine.matching_engine - INFO - Processing remaining quantity for order 28f8af13-f08b-42da-b865-71ef6eb8b8df
+2025-06-14 13:34:38,668 - engine.matching_engine - INFO - Added OrderType.STOP_LIMIT order 28f8af13-f08b-42da-b865-71ef6eb8b8df to inactive orders
+2025-06-14 13:34:41,129 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-14 13:34:41,130 - engine.matching_engine - INFO - Broadcasting updates for order 28f8af13-f08b-42da-b865-71ef6eb8b8df
+2025-06-14 13:34:41,132 - engine.matching_engine - INFO - Order 28f8af13-f08b-42da-b865-71ef6eb8b8df processing complete. Generated 0 trades
+2025-06-14 13:35:01,485 - engine.matching_engine - INFO - Processing new order ebb6c563-c01e-47f6-8207-2a4b99ea0729 of type OrderType.LIMIT for BTC_USD
+2025-06-14 13:35:01,486 - engine.matching_engine - INFO - Found 1 activated orders to process
+2025-06-14 13:35:01,487 - engine.matching_engine - INFO - Processing activated order 28f8af13-f08b-42da-b865-71ef6eb8b8df
+2025-06-14 13:35:01,489 - engine.matching_engine - INFO - Processing activated order 28f8af13-f08b-42da-b865-71ef6eb8b8df of type OrderType.LIMIT
+2025-06-14 13:35:01,489 - engine.matching_engine - INFO - Processing remaining quantity for activated order 28f8af13-f08b-42da-b865-71ef6eb8b8df
+2025-06-14 13:35:01,491 - engine.matching_engine - INFO - Added remaining quantity of activated order 28f8af13-f08b-42da-b865-71ef6eb8b8df to order book
+2025-06-14 13:35:01,493 - engine.matching_engine - INFO - Generated 0 trades from activated order 28f8af13-f08b-42da-b865-71ef6eb8b8df
+2025-06-14 13:35:01,495 - engine.matching_engine - INFO - Processing remaining quantity for order ebb6c563-c01e-47f6-8207-2a4b99ea0729
+2025-06-14 13:35:01,497 - engine.matching_engine - INFO - Added remaining quantity of order ebb6c563-c01e-47f6-8207-2a4b99ea0729 to order book
+2025-06-14 13:35:03,071 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-14 13:35:03,071 - engine.matching_engine - INFO - Broadcasting updates for order ebb6c563-c01e-47f6-8207-2a4b99ea0729
+2025-06-14 13:35:03,072 - engine.matching_engine - INFO - Order ebb6c563-c01e-47f6-8207-2a4b99ea0729 processing complete. Generated 0 trades
+2025-06-14 13:35:37,346 - engine.matching_engine - INFO - Processing new order a42125f6-9162-4c0d-89f7-4ff6eb6d31d7 of type OrderType.MARKET for BTC_USD
+2025-06-14 13:35:37,348 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-14 13:35:37,349 - engine.matching_engine - INFO - Processing remaining quantity for order a42125f6-9162-4c0d-89f7-4ff6eb6d31d7
+2025-06-14 13:35:38,029 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-14 13:35:39,406 - engine.redis_persistence - INFO - Trade 58ba0985-cb40-490e-bbac-1ac2eb5616d5 saved
+2025-06-14 13:35:39,406 - engine.matching_engine - INFO - Broadcasting updates for order a42125f6-9162-4c0d-89f7-4ff6eb6d31d7
+2025-06-14 13:35:39,408 - engine.matching_engine - INFO - Order a42125f6-9162-4c0d-89f7-4ff6eb6d31d7 processing complete. Generated 1 trades
+2025-06-14 13:46:36,751 - engine.redis_persistence - INFO - Redis connection initialized
+2025-06-14 13:46:36,752 - engine.matching_engine - INFO - MatchingEngine initialized
+2025-06-14 13:46:42,017 - engine.matching_engine - INFO - Processing new order 3614b709-4c17-42e4-9f65-0a7b46940dc1 of type OrderType.MARKET for BTC_USD
+2025-06-14 13:46:42,018 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-14 13:46:42,019 - engine.matching_engine - INFO - Processing remaining quantity for order 3614b709-4c17-42e4-9f65-0a7b46940dc1
+2025-06-14 13:46:42,020 - engine.matching_engine - INFO - Removed remaining quantity of OrderType.MARKET order 3614b709-4c17-42e4-9f65-0a7b46940dc1
+2025-06-14 13:46:42,020 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-14 13:46:42,022 - engine.matching_engine - INFO - Broadcasting updates for order 3614b709-4c17-42e4-9f65-0a7b46940dc1
+2025-06-14 13:46:42,022 - engine.matching_engine - INFO - Order 3614b709-4c17-42e4-9f65-0a7b46940dc1 processing complete. Generated 0 trades
+2025-06-14 13:51:36,877 - engine.redis_persistence - INFO - Redis connection initialized
+2025-06-14 13:51:36,877 - engine.matching_engine - INFO - MatchingEngine initialized

@@ -11,6 +11,7 @@ import logging
 from engine.base_models import Order, OrderSide, OrderType
 from engine.models import Trade, BBO
 from engine.order_book import OrderBook
+from engine.redis_persistence import RedisPersistence
 
 # Configure logging
 logging.basicConfig(
@@ -33,20 +34,31 @@ def get_or_create_engine(symbol: str) -> OrderBook:
     return engines[symbol]
 
 class MatchingEngine:
-    def __init__(self):
+    def __init__(self, redis_url: str = None):
         self.order_books: Dict[str, OrderBook] = {}
         self.subscribers: Dict[str, Set[asyncio.Queue]] = {
             "market_data": set(),
             "trades": set(),
             "orders": set()
         }
+        self.redis = RedisPersistence(redis_url) if redis_url else None
         logger.info("MatchingEngine initialized")
 
     def get_order_book(self, symbol: str) -> OrderBook:
         """Get or create an order book for a symbol."""
         if symbol not in self.order_books:
-            self.order_books[symbol] = OrderBook(symbol)
-            logger.info(f"Created new order book for {symbol}")
+            if self.redis:
+                # Try to load from Redis
+                order_book = self.redis.load_order_book(symbol)
+                if order_book:
+                    self.order_books[symbol] = order_book
+                    logger.info(f"Loaded order book for {symbol} from Redis")
+                else:
+                    self.order_books[symbol] = OrderBook(symbol)
+                    logger.info(f"Created new order book for {symbol}")
+            else:
+                self.order_books[symbol] = OrderBook(symbol)
+                logger.info(f"Created new order book for {symbol}")
         return self.order_books[symbol]
 
     async def process_activated_order(self, activated_order: Order, current_order: Order = None) -> List[Trade]:
@@ -154,11 +166,8 @@ class MatchingEngine:
             logger.info(f"Generated {len(activated_trades)} trades from activated order {activated_order.id}")
 
         # Process the new order
-        # if order.order_type == OrderType.MARKET:
-        #     trades.extend(order_book.match_order(order))
-        #     if order.quantity > 0:
-        #         order_book.add_order(order)
-        if order.quantity<=0:
+        if order.quantity <= 0:
+            logger.info(f"Order {order.id} has no remaining quantity, skipping processing")
             return trades
 
         logger.info(f"Processing remaining quantity for order {order.id}")
@@ -206,6 +215,12 @@ class MatchingEngine:
         elif order.order_type in [OrderType.STOP_LOSS, OrderType.STOP_LIMIT, OrderType.TAKE_PROFIT]:
             order_book.add_order(order)
             logger.info(f"Added {order.order_type} order {order.id} to inactive orders")
+
+        # Save state to Redis if available
+        if self.redis:
+            self.redis.save_order_book(order.symbol, order_book)
+            for trade in trades:
+                self.redis.save_trade(trade)
 
         # Broadcast updates
         logger.info(f"Broadcasting updates for order {order.id}")

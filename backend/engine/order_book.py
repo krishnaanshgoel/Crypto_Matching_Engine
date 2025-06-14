@@ -433,7 +433,11 @@ class OrderBook:
         elif order.filled_quantity > 0:
             order.status = "PARTIALLY_FILLED"
         else:
-            order.status = "OPEN"
+            # order.status = "OPEN"
+            if order.order_type == OrderType.MARKET:
+                order.status="CANCELLED"
+            else:
+                order.status="OPEN"
 
         # Only add the order to the book if it has remaining quantity
         # if remaining_quantity > 0:
