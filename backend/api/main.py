@@ -4,10 +4,11 @@ from datetime import datetime
 from typing import Dict, List, Optional
 from uuid import uuid4
 from decimal import Decimal
+import os
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
+# from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 
@@ -16,6 +17,7 @@ from engine.models import Trade
 from engine.matching_engine import MatchingEngine
 from engine.order_book import OrderBook
 from api.schemas import OrderRequest, OrderResponse, MarketDataResponse, TradeResponse
+from api.rest import router as rest_router
 
 app = FastAPI()
 
@@ -29,8 +31,17 @@ app.add_middleware(
 )
 
 # Mount static files and templates
-# app.mount("/static", StaticFiles(directory="api/static"), name="static")
-templates = Jinja2Templates(directory="api/templates")
+# static_dir = os.path.join(os.path.dirname(__file__), "static")
+# if os.path.isdir(static_dir):
+#     app.mount("/static", StaticFiles(directory=static_dir), name="static")
+templates_dir = os.path.join(os.path.dirname(__file__), "templates")
+if os.path.isdir(templates_dir):
+    templates = Jinja2Templates(directory=templates_dir)
+else:
+    templates = None
+
+# Include the REST API router
+app.include_router(rest_router, prefix="/api")
 
 # Global matching engine instance
 matching_engine: Optional[MatchingEngine] = None
@@ -49,63 +60,91 @@ async def get_index(request: Request):
 @app.post("/orders")
 async def create_order(order_data: dict):
     try:
-        engine = get_or_create_engine()
-        
         # Validate required fields
-        required_fields = ['symbol', 'side', 'order_type', 'quantity']
+        required_fields = ["symbol", "side", "order_type", "quantity"]
         for field in required_fields:
             if field not in order_data:
-                raise HTTPException(status_code=400, detail=f"Missing required field: {field}")
-        
+                raise HTTPException(status_code=422, detail=f"Missing required field: {field}")
+
         # Convert and validate side
         try:
-            side = OrderSide(order_data['side'].upper())
-        except ValueError:
-            raise HTTPException(status_code=400, detail=f"Invalid side: {order_data['side']}. Must be 'BUY' or 'SELL'")
-        
+            side = OrderSide[order_data["side"]]
+        except KeyError:
+            raise HTTPException(status_code=422, detail="Invalid side")
+
         # Convert and validate order type
         try:
-            order_type = OrderType(order_data['order_type'].upper())
-        except ValueError:
-            raise HTTPException(status_code=400, detail=f"Invalid order type: {order_data['order_type']}. Must be 'MARKET', 'LIMIT', 'IOC', or 'FOK'")
-        
+            order_type = OrderType[order_data["order_type"]]
+        except KeyError:
+            raise HTTPException(status_code=422, detail="Invalid order type")
+
         # Convert and validate quantity
         try:
-            quantity = Decimal(str(order_data['quantity']))
+            quantity = Decimal(str(order_data["quantity"]))
             if quantity <= 0:
                 raise ValueError("Quantity must be positive")
         except (ValueError, TypeError):
-            raise HTTPException(status_code=400, detail="Invalid quantity. Must be a positive number")
-        
-        # Convert and validate price for limit orders
+            raise HTTPException(status_code=422, detail="Invalid quantity")
+
+        # Convert and validate price for limit and stop-limit orders
         price = None
-        if order_type != OrderType.MARKET:
-            if 'price' not in order_data:
-                raise HTTPException(status_code=400, detail="Price is required for non-market orders")
+        if order_type in [OrderType.LIMIT, OrderType.STOP_LIMIT]:
+            if "price" not in order_data:
+                raise HTTPException(status_code=422, detail="Price required for limit and stop-limit orders")
             try:
-                price = Decimal(str(order_data['price']))
+                price = Decimal(str(order_data["price"]))
                 if price <= 0:
                     raise ValueError("Price must be positive")
             except (ValueError, TypeError):
-                raise HTTPException(status_code=400, detail="Invalid price. Must be a positive number")
-        
+                raise HTTPException(status_code=422, detail="Invalid price")
+
+        # Convert and validate stop price for stop orders
+        stop_price = None
+        if order_type in [OrderType.STOP_LOSS, OrderType.STOP_LIMIT, OrderType.TAKE_PROFIT]:
+            if "stop_price" not in order_data:
+                raise HTTPException(status_code=422, detail="Stop price required for stop orders")
+            try:
+                stop_price = Decimal(str(order_data["stop_price"]))
+                if stop_price <= 0:
+                    raise ValueError("Stop price must be positive")
+            except (ValueError, TypeError):
+                raise HTTPException(status_code=422, detail="Invalid stop price")
+
         # Create order
         order = Order(
-            symbol=order_data['symbol'],
+            symbol=order_data["symbol"],
             side=side,
             order_type=order_type,
             quantity=quantity,
             price=price,
-            order_id=str(uuid4())
+            stop_price=stop_price
         )
-        
+
         # Process order
+        engine = get_or_create_engine()
         trades = await engine.process_order(order)
-        
-        return {
-            "order": order.dict(),
+
+        # Return response
+        response = {
+            "symbol": order.symbol,
+            "order_id": order.id,
+            "side": order.side.value,
+            "order_type": order.order_type.value,
+            "quantity": str(order.quantity),
+            "status": order.status,
             "trades": [trade.dict() for trade in trades]
         }
+
+        # Add optional fields if present
+        if order.price is not None:
+            response["price"] = str(order.price)
+        if order.stop_price is not None:
+            response["stop_price"] = str(order.stop_price)
+
+        return response
+
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -166,32 +205,51 @@ async def order_callback(symbol: str, message: str):
             except:
                 order_clients[safe_symbol].remove(client)
 
+# WebSocket endpoints
 @app.websocket("/ws/market/{symbol}")
 async def websocket_market_endpoint(websocket: WebSocket, symbol: str):
     engine = get_or_create_engine()
     try:
-        await engine.subscribe_market_data(websocket, symbol)
+        await websocket.accept()
+        queue = engine.subscribe("market_data")
+        
         while True:
-            await websocket.receive_text()
+            data = await queue.get()
+            await websocket.send_json(data)
+            
     except WebSocketDisconnect:
-        engine.unsubscribe_market_data(websocket, symbol)
+        pass
+    except Exception as e:
+        await websocket.close(code=1000, reason=str(e))
 
 @app.websocket("/ws/trades/{symbol}")
 async def websocket_trades_endpoint(websocket: WebSocket, symbol: str):
     engine = get_or_create_engine()
     try:
-        await engine.subscribe_trades(websocket, symbol)
+        await websocket.accept()
+        queue = engine.subscribe("trades")
+        
         while True:
-            await websocket.receive_text()
+            data = await queue.get()
+            await websocket.send_json(data)
+            
     except WebSocketDisconnect:
-        engine.unsubscribe_trades(websocket, symbol)
+        pass
+    except Exception as e:
+        await websocket.close(code=1000, reason=str(e))
 
 @app.websocket("/ws/orders/{symbol}")
 async def websocket_orders_endpoint(websocket: WebSocket, symbol: str):
     engine = get_or_create_engine()
     try:
-        await engine.subscribe_orders(websocket, symbol)
+        await websocket.accept()
+        queue = engine.subscribe("orders")
+        
         while True:
-            await websocket.receive_text()
+            data = await queue.get()
+            await websocket.send_json(data)
+            
     except WebSocketDisconnect:
-        engine.unsubscribe_orders(websocket, symbol)
+        pass
+    except Exception as e:
+        await websocket.close(code=1000, reason=str(e))

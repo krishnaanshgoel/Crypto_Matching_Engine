@@ -1,15 +1,20 @@
 from decimal import Decimal
 from typing import Dict, List, Optional, Set, Callable, Any, Tuple
-from datetime import datetime
+from datetime import datetime, UTC
 from collections import defaultdict
 import json
 import asyncio
 from uuid import uuid4
 from fastapi import WebSocket
+import logging
 
 from engine.base_models import Order, OrderSide, OrderType
 from engine.models import Trade, BBO
 from engine.order_book import OrderBook
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 # Global dictionary to store engine instances
 engines = {}
@@ -23,33 +28,169 @@ def get_or_create_engine(symbol: str) -> OrderBook:
 class MatchingEngine:
     def __init__(self):
         self.order_books: Dict[str, OrderBook] = {}
-        self.market_data_subscribers: Dict[str, Set[Callable[[str], Any]]] = defaultdict(set)
-        self.trade_subscribers: Dict[str, Set[Callable[[str], Any]]] = defaultdict(set)
-        self.order_subscribers: Dict[str, Set[Callable[[str], Any]]] = defaultdict(set)
+        self.subscribers: Dict[str, Set[asyncio.Queue]] = {
+            "market_data": set(),
+            "trades": set(),
+            "orders": set()
+        }
+        logger.debug("MatchingEngine initialized")
 
     def get_order_book(self, symbol: str) -> OrderBook:
+        """Get or create an order book for a symbol."""
         if symbol not in self.order_books:
             self.order_books[symbol] = OrderBook(symbol)
+            logger.debug(f"Created new order book for {symbol}")
         return self.order_books[symbol]
 
+    async def process_activated_order(self, activated_order: Order, current_order: Order = None) -> List[Trade]:
+        """Process an activated order, potentially matching against the current order."""
+        trades = []
+        order_book = self.get_order_book(activated_order.symbol)
+
+        # If we have a current order and it can match with the activated order
+        if current_order and self._can_orders_match(activated_order, current_order):
+            # Match the activated order against the current order
+            trade_quantity = min(activated_order.quantity, current_order.quantity)
+            trade_price = current_order.price if current_order.order_type != OrderType.MARKET else (
+                order_book.get_best_ask().price if activated_order.side == OrderSide.BUY 
+                else order_book.get_best_bid().price
+            )
+
+            trade = Trade(
+                id=str(uuid4()),
+                symbol=activated_order.symbol,
+                price=trade_price,
+                quantity=trade_quantity,
+                buy_order_id=activated_order.id if activated_order.side == OrderSide.BUY else current_order.id,
+                sell_order_id=current_order.id if activated_order.side == OrderSide.BUY else activated_order.id,
+                side=activated_order.side
+            )
+            trades.append(trade)
+
+            # Update quantities
+            activated_order.quantity -= trade_quantity
+            activated_order.filled_quantity += trade_quantity
+            current_order.quantity -= trade_quantity
+            current_order.filled_quantity += trade_quantity
+
+            # Update statuses
+            if activated_order.quantity == 0:
+                activated_order.status = "FILLED"
+            else:
+                activated_order.status = "PARTIALLY_FILLED"
+
+            if current_order.quantity == 0:
+                current_order.status = "FILLED"
+            else:
+                current_order.status = "PARTIALLY_FILLED"
+
+        # If activated order still has quantity, process it normally
+        if activated_order.quantity > 0:
+            if activated_order.order_type == OrderType.MARKET:
+                trades.extend(order_book.match_order(activated_order))
+            elif activated_order.order_type == OrderType.LIMIT:
+                trades.extend(order_book.match_order(activated_order))
+                if activated_order.quantity > 0:
+                    order_book.add_order(activated_order)
+            elif activated_order.order_type in [OrderType.IOC, OrderType.FOK]:
+                trades.extend(order_book.match_order(activated_order))
+
+        return trades
+
+    def _can_orders_match(self, order1: Order, order2: Order) -> bool:
+        """Check if two orders can match with each other."""
+        if order1.side == order2.side:
+            return False
+
+        # For market orders, they can always match
+        if order1.order_type == OrderType.MARKET or order2.order_type == OrderType.MARKET:
+            return True
+
+        # For limit orders, check if prices cross
+        if order1.side == OrderSide.BUY:
+            return order1.price >= order2.price
+        else:
+            return order1.price <= order2.price
+
     async def process_order(self, order: Order) -> List[Trade]:
+        """Process a new order."""
+        logger.debug(f"Processing order: {order.id} for {order.symbol}")
         order_book = self.get_order_book(order.symbol)
         trades = []
 
-        if order.order_type == OrderType.MARKET:
-            trades.extend(self._process_market_order(order, order_book))
-        elif order.order_type == OrderType.LIMIT:
-            trades.extend(self._process_limit_order(order, order_book))
-        elif order.order_type == OrderType.IOC:
-            trades.extend(self._process_ioc_order(order, order_book))
-        elif order.order_type == OrderType.FOK:
-            trades.extend(self._process_fok_order(order, order_book))
+        # Check for inactive orders that should be triggered
+        price = order.price if order.price is not None else order_book.get_best_bid_ask()[0]
+        activated_orders = order_book.check_inactive_orders(price)
+        print("activated_orders", activated_orders)
 
-        if trades:
-            for trade in trades:
-                await self._broadcast_trade(trade)
-        await self._broadcast_market_data(order.symbol)
-        await self._broadcast_order(order)
+        # Process activated orders first, potentially matching against the current order
+        for activated_order in activated_orders:
+            activated_trades = await self.process_activated_order(activated_order, order)
+            trades.extend(activated_trades)
+
+        # Process the new order
+        # if order.order_type == OrderType.MARKET:
+        #     trades.extend(order_book.match_order(order))
+        #     if order.quantity > 0:
+        #         order_book.add_order(order)
+        if order.quantity<=0:
+            return trades
+        if order.order_type == OrderType.LIMIT:
+            trades.extend(order_book.match_order(order))
+            if order.quantity > 0:
+                order_book.add_order(order)
+        elif order.order_type == OrderType.IOC or order.order_type == OrderType.MARKET:
+            trades.extend(order_book.match_order(order))
+            if order.quantity > 0:
+                order_book.remove_order(order.id)
+        elif order.order_type == OrderType.FOK :
+            # For FOK, we need to check if we can fill the entire order before executing
+            if order.side == OrderSide.BUY:
+                total_available = Decimal('0')
+                for price_level in order_book.asks.values():
+                    for ask_order in price_level.orders:
+                        if order.price is not None and ask_order.price > order.price:
+                            break
+                        total_available += ask_order.quantity
+                        if total_available >= order.quantity:
+                            break
+                    if total_available >= order.quantity:
+                        break
+                if total_available >= order.quantity:
+                    trades.extend(order_book.match_order(order))
+            else:  # SELL
+                total_available = Decimal('0')
+                for price_level in order_book.bids.values():
+                    for bid_order in price_level.orders:
+                        if order.price is not None and bid_order.price < order.price:
+                            break
+                        total_available += bid_order.quantity
+                        if total_available >= order.quantity:
+                            break
+                    if total_available >= order.quantity:
+                        break
+                if total_available >= order.quantity:
+                    trades.extend(order_book.match_order(order))
+        elif order.order_type in [OrderType.STOP_LOSS, OrderType.STOP_LIMIT, OrderType.TAKE_PROFIT]:
+            order_book.add_order(order)
+        
+        print("order_book", order_book)
+
+        # Broadcast updates
+        logger.debug(f"Broadcasting updates for order {order.id}")
+        try:
+            await self._broadcast_market_data(order.symbol)
+            logger.debug("Market data broadcast complete")
+            
+            await self._broadcast_trades(trades)
+            logger.debug("Trades broadcast complete")
+            
+            await self._broadcast_order(order)
+            logger.debug("Order broadcast complete")
+        except Exception as e:
+            logger.error(f"Error broadcasting updates: {e}", exc_info=True)
+
+        logger.debug(f"Order {order.id} processed and added to order book for {order.symbol}")
 
         return trades
 
@@ -387,12 +528,13 @@ class MatchingEngine:
         return trades
 
     def cancel_order(self, order_id: str) -> bool:
+        """Cancel an order."""
         for order_book in self.order_books.values():
             order = order_book.remove_order(order_id)
             if order:
                 order.status = "CANCELLED"
-                self._broadcast_market_data(order.symbol)
-                self._broadcast_order(order)
+                asyncio.create_task(self._broadcast_market_data(order.symbol))
+                asyncio.create_task(self._broadcast_order(order))
                 return True
         return False
 
@@ -407,123 +549,86 @@ class MatchingEngine:
         return data
 
     async def _broadcast_market_data(self, symbol: str) -> None:
-        """Broadcast market data to all subscribers."""
-        if symbol not in self.market_data_subscribers:
-            return
+        """Broadcast market data updates to subscribers."""
+        order_book = self.get_order_book(symbol)
+        snapshot = order_book.get_order_book_snapshot()
+        
+        for queue in self.subscribers["market_data"]:
+            await queue.put(snapshot)
 
-        order_book = self.order_books[symbol]
+    async def _broadcast_trades(self, trades: List[Trade]) -> None:
+        """Broadcast trade updates to subscribers."""
+        for trade in trades:
+            for queue in self.subscribers["trades"]:
+                await queue.put(trade.dict())
+
+    async def _broadcast_order(self, order: Order) -> None:
+        """Broadcast order updates to subscribers."""
+        logger.debug(f"Broadcasting order update for {order.id}")
+        order_data = {
+            "type": "order_update",
+            "symbol": order.symbol,
+            "order_id": order.id,
+            "side": order.side.value,
+            "order_type": order.order_type.value,
+            "quantity": str(order.quantity),
+            "filled_quantity": str(order.filled_quantity),
+            "status": order.status,
+            "timestamp": datetime.utcnow().isoformat()
+        }
+        
+        # Add optional fields if present
+        if order.price is not None:
+            order_data["price"] = str(order.price)
+        if order.stop_price is not None:
+            order_data["stop_price"] = str(order.stop_price)
+            
+        # Convert to string format for JSON serialization
+        order_data = self._convert_decimal_to_str(order_data)
+        
+        logger.debug(f"Order data to broadcast: {order_data}")
+        logger.debug(f"Number of subscribers: {len(self.subscribers['orders'])}")
+        
+        # Create a copy of subscribers to avoid modification during iteration
+        subscribers = list(self.subscribers["orders"])
+        
+        for queue in subscribers:
+            try:
+                logger.debug(f"Attempting to send order update to subscriber queue")
+                await queue.put(order_data)
+                logger.debug(f"Successfully sent order update to subscriber queue")
+            except Exception as e:
+                logger.error(f"Error broadcasting order update: {e}", exc_info=True)
+                # Remove failed subscriber
+                self.subscribers["orders"].discard(queue)
+
+    def subscribe(self, channel: str) -> asyncio.Queue:
+        """Subscribe to a channel."""
+        queue = asyncio.Queue()
+        self.subscribers[channel].add(queue)
+        logger.debug(f"New subscription to {channel}. Total subscribers: {len(self.subscribers[channel])}")
+        return queue
+
+    def unsubscribe(self, channel: str, queue: asyncio.Queue) -> None:
+        """Unsubscribe from a channel."""
+        if queue in self.subscribers[channel]:
+            self.subscribers[channel].remove(queue)
+            logger.debug(f"Unsubscribed from {channel}. Remaining subscribers: {len(self.subscribers[channel])}")
+        else:
+            logger.warning(f"Attempted to unsubscribe non-existent queue from {channel}")
+
+    def get_bbo(self, symbol: str) -> Dict:
+        """Get the best bid and offer (BBO)."""
+        order_book = self.get_order_book(symbol)
         best_bid = order_book.get_best_bid()
         best_ask = order_book.get_best_ask()
         
-        # Convert Decimal values to strings
-        market_data = {
-            'best_bid': str(best_bid.price) if best_bid else None,
-            'best_bid_quantity': str(best_bid.total_quantity) if best_bid else None,
-            'best_ask': str(best_ask.price) if best_ask else None,
-            'best_ask_quantity': str(best_ask.total_quantity) if best_ask else None,
-            'bids': [
-                {'price': str(price), 'quantity': str(level.total_quantity)}
-                for price, level in order_book.bids.items()
-                if level.total_quantity > 0
-            ],
-            'asks': [
-                {'price': str(price), 'quantity': str(level.total_quantity)}
-                for price, level in order_book.asks.items()
-                if level.total_quantity > 0
-            ]
-        }
-
-        for subscriber in self.market_data_subscribers[symbol]:
-            try:
-                await subscriber.send_json(market_data)
-            except Exception as e:
-                print(f"Broadcast error: {e}")
-
-    async def _broadcast_trade(self, trade: Trade) -> None:
-        """Broadcast trade to all subscribers."""
-        if trade.symbol not in self.trade_subscribers:
-            return
-
-        # Convert Decimal values to strings
-        trade_data = {
-            'price': str(trade.price),
-            'quantity': str(trade.quantity),
-            'side': trade.side.value,
-            'timestamp': trade.timestamp.isoformat(),
-            'buy_order_id': trade.buy_order_id,
-            'sell_order_id': trade.sell_order_id
-        }
-
-        for subscriber in self.trade_subscribers[trade.symbol]:
-            try:
-                await subscriber.send_json(trade_data)
-            except Exception as e:
-                print(f"Broadcast error: {e}")
-
-    async def _broadcast_order(self, order: Order) -> None:
-        """Broadcast order to all subscribers."""
-        if order.symbol not in self.order_subscribers:
-            return
-
-        # Convert Decimal values to strings
-        order_data = {
-            'order_id': order.order_id,
-            'symbol': order.symbol,
-            'side': order.side.value,
-            'order_type': order.order_type.value,
-            'quantity': str(order.quantity),
-            'price': str(order.price) if order.price else None,
-            'status': order.status.value,
-            'timestamp': order.timestamp.isoformat()
-        }
-
-        for subscriber in self.order_subscribers[order.symbol]:
-            try:
-                await subscriber.send_json(order_data)
-            except Exception as e:
-                print(f"Broadcast error: {e}")
-
-    async def subscribe_market_data(self, websocket: WebSocket, symbol: str) -> None:
-        await websocket.accept()
-        self.market_data_subscribers[symbol].add(lambda msg: asyncio.create_task(websocket.send_text(msg)))
-        self._broadcast_market_data(symbol)
-
-    def unsubscribe_market_data(self, websocket: WebSocket, symbol: str) -> None:
-        self.market_data_subscribers[symbol].discard(lambda msg: asyncio.create_task(websocket.send_text(msg)))
-
-    async def subscribe_trades(self, websocket: WebSocket, symbol: str) -> None:
-        await websocket.accept()
-        self.trade_subscribers[symbol].add(lambda msg: asyncio.create_task(websocket.send_text(msg)))
-
-    def unsubscribe_trades(self, websocket: WebSocket, symbol: str) -> None:
-        self.trade_subscribers[symbol].discard(lambda msg: asyncio.create_task(websocket.send_text(msg)))
-
-    async def subscribe_orders(self, websocket: WebSocket, symbol: str) -> None:
-        await websocket.accept()
-        self.order_subscribers[symbol].add(lambda msg: asyncio.create_task(websocket.send_text(msg)))
-
-    def unsubscribe_orders(self, websocket: WebSocket, symbol: str) -> None:
-        self.order_subscribers[symbol].discard(lambda msg: asyncio.create_task(websocket.send_text(msg)))
-
-    def get_bbo(self, symbol: str = "BTC_USD") -> Dict:
-        """Get the Best Bid/Offer (BBO) for a symbol."""
-        if symbol not in self.order_books:
-            return {
-                "best_bid": None,
-                "best_bid_quantity": None,
-                "best_ask": None,
-                "best_ask_quantity": None
-            }
-
-        order_book = self.order_books[symbol]
-        best_bid = order_book.get_best_bid()
-        best_ask = order_book.get_best_ask()
-
         return {
-            "best_bid": str(best_bid.price) if best_bid else None,
-            "best_bid_quantity": str(best_bid.total_quantity) if best_bid else None,
-            "best_ask": str(best_ask.price) if best_ask else None,
-            "best_ask_quantity": str(best_ask.total_quantity) if best_ask else None
+            "best_bid": float(best_bid.price) if best_bid else None,
+            "best_bid_quantity": float(best_bid.quantity) if best_bid else None,
+            "best_ask": float(best_ask.price) if best_ask else None,
+            "best_ask_quantity": float(best_ask.quantity) if best_ask else None,
+            "timestamp": datetime.utcnow().isoformat()
         }
 
     def get_order_book(self, symbol: str = "BTC_USD") -> Dict:

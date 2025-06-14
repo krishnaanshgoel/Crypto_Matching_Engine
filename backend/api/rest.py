@@ -19,44 +19,34 @@ from fastapi import APIRouter, HTTPException, Depends
 from typing import List, Dict, Optional
 from decimal import Decimal
 from datetime import datetime
-import uuid
+from uuid import uuid4
 
 from engine.base_models import Order, OrderSide, OrderType
-from engine.matching_engine import get_or_create_engine, MatchingEngine, OrderBook
+from engine.globals import matching_engine
 from engine.models import Trade
 from schemas.order import OrderRequest
 from fastapi.responses import JSONResponse
+from engine.order_book import OrderBook
 
 router = APIRouter()
 
-# Initialize matching engine
-matching_engine = MatchingEngine()
+def normalize_symbol(symbol: str) -> str:
+    """Normalize symbol format to ensure consistency."""
+    return symbol.upper().replace('-', '_')
 
-# Initialize order book for BTC-USDT
-order_book = get_or_create_engine("BTC-USDT")
-
-@router.post("/orders")
-async def create_order(order_request: OrderRequest):
-    """Create a new order."""
+@router.get("/market-data/{symbol}")
+async def get_market_data(symbol: str):
+    """Get current market data for a symbol."""
     try:
-        # Convert request to Order object
-        order = Order(
-            id=order_request.id,
-            symbol=order_request.symbol,
-            side=OrderSide[order_request.side],
-            order_type=OrderType[order_request.order_type],
-            quantity=Decimal(str(order_request.quantity)),
-            price=Decimal(str(order_request.price)) if order_request.price else None,
-            timestamp=datetime.utcnow()
-        )
-        
-        # Add order to matching engine
-        trades = order_book.add_order(order)
+        normalized_symbol = normalize_symbol(symbol)
+        order_book = matching_engine.get_order_book(normalized_symbol)
+        bbo = order_book.get_bbo()
+        depth = order_book.get_top_levels(10)
         
         return {
-            "order_id": order.id,
-            "status": "FILLED" if not order.quantity else "PARTIALLY_FILLED",
-            "trades": [trade.dict() for trade in trades]
+            "symbol": symbol,
+            "timestamp": datetime.utcnow().isoformat(),
+            "bbo": bbo,
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -65,35 +55,59 @@ async def create_order(order_request: OrderRequest):
 async def get_pending_orders(symbol: str):
     """Get pending orders for a symbol."""
     try:
-        # Get the order book for the symbol
-        book = get_or_create_engine(symbol)
-        
-        # Get bids and asks
-        bids = []
-        for price, orders in book.bids.items():
-            for order in orders:
-                bids.append({
-                    "id": order.id,
-                    "price": float(price),
-                    "quantity": float(order.quantity),
-                    "timestamp": order.timestamp.isoformat()
-                })
-        
-        asks = []
-        for price, orders in book.asks.items():
-            for order in orders:
-                asks.append({
-                    "id": order.id,
-                    "price": float(price),
-                    "quantity": float(order.quantity),
-                    "timestamp": order.timestamp.isoformat()
-                })
+        normalized_symbol = normalize_symbol(symbol)
+        order_book = matching_engine.get_order_book(normalized_symbol)
+        pending_orders = order_book.get_pending_orders()
         
         return {
             "symbol": symbol,
-            "bids": sorted(bids, key=lambda x: x["price"], reverse=True),
-            "asks": sorted(asks, key=lambda x: x["price"])
+            "timestamp": datetime.utcnow().isoformat(),
+            "bids": pending_orders["bids"],
+            "asks": pending_orders["asks"]
         }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.post("/orders")
+async def create_order(order_request: OrderRequest):
+    """Create a new order."""
+    try:
+        # Normalize symbol
+        normalized_symbol = normalize_symbol(order_request.symbol)
+        
+        # Convert request to Order object
+        order = Order(
+            id=str(uuid4()),
+            symbol=normalized_symbol,
+            side=OrderSide[order_request.side],
+            order_type=OrderType[order_request.order_type],
+            quantity=Decimal(str(order_request.quantity)),
+            price=Decimal(str(order_request.price)) if order_request.price else None,
+            stop_price=Decimal(str(order_request.stop_price)) if order_request.stop_price else None,
+            timestamp=datetime.utcnow()
+        )
+        
+        # Process the order using the matching engine
+        trades = await matching_engine.process_order(order)
+        
+        # Prepare response
+        response = {
+            "order_id": order.id,
+            "symbol": order_request.symbol,  # Return original symbol format
+            "side": order.side.value,
+            "order_type": order.order_type.value,
+            "quantity": str(order.quantity),
+            "status": order.status,
+            "trades": [trade.dict() for trade in trades]
+        }
+        
+        # Add optional fields if present
+        if order.price is not None:
+            response["price"] = str(order.price)
+        if order.stop_price is not None:
+            response["stop_price"] = str(order.stop_price)
+            
+        return response
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -101,11 +115,11 @@ async def get_pending_orders(symbol: str):
 async def get_recent_trades(symbol: str, limit: int = 100):
     """Get recent trades for a symbol."""
     try:
-        # Get the order book for the symbol
-        book = get_or_create_engine(symbol)
+        normalized_symbol = normalize_symbol(symbol)
+        order_book = matching_engine.get_order_book(normalized_symbol)
         
         # Get recent trades
-        trades = book.trades[-limit:]
+        trades = order_book.trades[-limit:]
         
         return {
             "symbol": symbol,
@@ -116,20 +130,12 @@ async def get_recent_trades(symbol: str, limit: int = 100):
 
 @router.get("/market-data/{symbol}/depth")
 async def get_order_book_depth(symbol: str, depth: Optional[int] = 10) -> Dict:
-    """Get top N levels of the order book for a symbol.
-    
-    Args:
-        symbol: Trading pair symbol (e.g., "BTC-USD")
-        depth: Number of price levels to return (default: 10)
-        
-    Returns:
-        Dictionary containing order book depth data
-    """
+    """Get top N levels of the order book for a symbol."""
     if depth < 1 or depth > 100:
         raise HTTPException(status_code=400, detail="Depth must be between 1 and 100")
         
-    engine = get_or_create_engine(symbol)
-    order_book = engine.order_book
+    normalized_symbol = normalize_symbol(symbol)
+    order_book = matching_engine.get_order_book(normalized_symbol)
     
     depth_data = order_book.get_top_levels(depth)
     
