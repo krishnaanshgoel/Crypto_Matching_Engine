@@ -5,6 +5,7 @@ from collections import defaultdict
 from uuid import uuid4
 import logging
 
+
 from engine.base_models import Order, OrderSide, OrderType, Trade
 
 logger = logging.getLogger(__name__)
@@ -15,25 +16,36 @@ class PriceLevel:
         self.orders: List[Order] = []
         self.total_quantity = Decimal('0')
 
-    def add_order(self, order: Order):
+    def __lt__(self, other):
+        """Less than comparison for sorting."""
+        return self.price < other.price
+
+    def __gt__(self, other):
+        """Greater than comparison for sorting."""
+        return self.price > other.price
+
+    def __eq__(self, other):
+        """Equality comparison."""
+        return self.price == other.price
+
+    def add_order(self, order: Order) -> None:
+        """Add an order to this price level."""
         self.orders.append(order)
         self.total_quantity += order.quantity
 
-    def remove_order(self, order_id: str) -> Optional[Order]:
-        for i, order in enumerate(self.orders):
-            if order.id == order_id:
-                removed_order = self.orders.pop(i)
-                self.total_quantity -= removed_order.quantity
-                return removed_order
-        return None
+    def remove_order(self, order: Order) -> None:
+        """Remove an order from this price level."""
+        if order in self.orders:
+            self.orders.remove(order)
+            self.total_quantity -= order.quantity
 
-    def update_quantity(self, order_id: str, new_quantity: Decimal) -> bool:
-        for order in self.orders:
-            if order.id == order_id:
-                self.total_quantity = self.total_quantity - order.quantity + new_quantity
-                order.quantity = new_quantity
-                return True
-        return False
+    def dict(self) -> Dict:
+        """Convert price level to dictionary format."""
+        return {
+            'price': str(self.price),
+            'quantity': str(self.total_quantity),
+            'orders': len(self.orders)
+        }
 
 class OrderBook:
     def __init__(self, symbol: str):
@@ -84,44 +96,54 @@ class OrderBook:
 
     def remove_order(self, order_id: str) -> Optional[Order]:
         """Remove an order from the order book."""
-        # Check inactive orders first
-        if order_id in self.inactive_orders:
-            return self.inactive_orders.pop(order_id)
-
-        # Check regular orders
-        order = self.orders.get(order_id)
-        if not order:
-            return None
-
-        price_levels = self.bids if order.side == OrderSide.BUY else self.asks
-        if order.price in price_levels:
-            removed_order = price_levels[order.price].remove_order(order_id)
-            if removed_order:
-                del self.orders[order_id]
-                # Clean up empty price levels
-                if not price_levels[order.price].orders:
-                    del price_levels[order.price]
-                    # Update best bid/ask if necessary
-                    if order.side == OrderSide.BUY and self._best_bid and self._best_bid.price == order.price:
+        logger.info(f"Removing order {order_id} from order book")
+        
+        # Check bids
+        for price, level in list(self.bids.items()):
+            for order in level.orders:
+                if order.id == order_id:
+                    level.remove_order(order)
+                    # Update best bid if we're removing from the best bid level
+                    if self._best_bid and (self._best_bid.price == price or order in self._best_bid.orders):
+                        logger.info(f"Removing order from best bid level at price {price}")
+                        if not level.orders:
+                            del self.bids[price]
                         self._update_best_bid()
-                    elif order.side == OrderSide.SELL and self._best_ask and self._best_ask.price == order.price:
+                    # Remove empty price level
+                    elif not level.orders:
+                        del self.bids[price]
+                    return order
+
+        # Check asks
+        for price, level in list(self.asks.items()):
+            for order in level.orders:
+                if order.id == order_id:
+                    level.remove_order(order)
+                    # Update best ask if we're removing from the best ask level
+                    if self._best_ask and (self._best_ask.price == price or order in self._best_ask.orders):
+                        logger.info(f"Removing order from best ask level at price {price}")
+                        if not level.orders:
+                            del self.asks[price]
                         self._update_best_ask()
-                return removed_order
+                    # Remove empty price level
+                    elif not level.orders:
+                        del self.asks[price]
+                    return order
+
+        logger.warning(f"Order {order_id} not found in order book")
         return None
 
     def get_best_bid(self) -> Optional[PriceLevel]:
-        """Get the best bid (highest price) as a PriceLevel object."""
-        if not self.bids:
-            return None
-        best_price = max(self.bids.keys())
-        return self.bids[best_price] if self.bids[best_price].orders else None
+        """Get the best bid price level."""
+        if not self._best_bid and self.bids:
+            self._update_best_bid()
+        return self._best_bid
 
     def get_best_ask(self) -> Optional[PriceLevel]:
-        """Get the best ask (lowest price) as a PriceLevel object."""
-        if not self.asks:
-            return None
-        best_price = min(self.asks.keys())
-        return self.asks[best_price] if self.asks[best_price].orders else None
+        """Get the best ask price level."""
+        if not self._best_ask and self.asks:
+            self._update_best_ask()
+        return self._best_ask
 
     def get_best_bid_ask(self) -> Tuple[Optional[Decimal], Optional[Decimal]]:
         """Get the best bid and ask prices."""
@@ -208,20 +230,46 @@ class OrderBook:
         }
 
     def _update_best_bid(self) -> None:
-        """Update the best bid price level."""
+        """Update the best bid after order removal."""
         if not self.bids:
             self._best_bid = None
+            logger.info("No bids left, best bid set to None")
             return
+
+        # Find the highest price level with orders
         best_price = max(self.bids.keys())
-        self._best_bid = self.bids[best_price]
+        best_level = self.bids[best_price]
+        
+        if best_level.orders:
+            self._best_bid = best_level
+            logger.info(f"Updated best bid to price {best_price} with {len(best_level.orders)} orders and total quantity {best_level.total_quantity}")
+        else:
+            # If the best level is empty, remove it and try again
+            del self.bids[best_price]
+            logger.info(f"Removed empty bid level at price {best_price}")
+            # Recursively find the next best bid
+            self._update_best_bid()
 
     def _update_best_ask(self) -> None:
-        """Update the best ask price level."""
+        """Update the best ask after order removal."""
         if not self.asks:
             self._best_ask = None
+            logger.info("No asks left, best ask set to None")
             return
+
+        # Find the lowest price level with orders
         best_price = min(self.asks.keys())
-        self._best_ask = self.asks[best_price]
+        best_level = self.asks[best_price]
+        
+        if best_level.orders:
+            self._best_ask = best_level
+            logger.info(f"Updated best ask to price {best_price} with {len(best_level.orders)} orders and total quantity {best_level.total_quantity}")
+        else:
+            # If the best level is empty, remove it and try again
+            del self.asks[best_price]
+            logger.info(f"Removed empty ask level at price {best_price}")
+            # Recursively find the next best ask
+            self._update_best_ask()
 
     def update_order(self, order_id: str, new_quantity: Decimal) -> Optional[Order]:
         order = self.orders.get(order_id)
@@ -274,46 +322,50 @@ class OrderBook:
         }
 
     def get_pending_orders(self) -> Dict:
-        """Get all pending orders in the order book."""
-        pending_orders = {
-            "bids": [],
-            "asks": []
+        """Get a snapshot of pending orders in the order book."""
+        return {
+            'bids': [
+                {
+                    'price': str(level.price),
+                    'quantity': str(level.total_quantity),
+                    'orders': [
+                        {
+                            'id': order.id,
+                            'side': order.side.value,
+                            'type': order.order_type.value,
+                            'quantity': str(order.quantity),
+                            'filled_quantity': str(order.filled_quantity),
+                            'status': order.status,
+                            'timestamp': order.timestamp.isoformat() if hasattr(order, 'timestamp') else datetime.utcnow().isoformat()
+                        }
+                        for order in level.orders if order.status not in ["FILLED", "CANCELLED"]
+                    ]
+                }
+                for level in sorted(self.bids.values(), key=lambda x: x.price, reverse=True)
+                if any(order.status not in ["FILLED", "CANCELLED"] for order in level.orders)
+            ],
+            'asks': [
+                {
+                    'price': str(level.price),
+                    'quantity': str(level.total_quantity),
+                    'orders': [
+                        {
+                            'id': order.id,
+                            'side': order.side.value,
+                            'type': order.order_type.value,
+                            'quantity': str(order.quantity),
+                            'filled_quantity': str(order.filled_quantity),
+                            'status': order.status,
+                            'timestamp': order.timestamp.isoformat() if hasattr(order, 'timestamp') else datetime.utcnow().isoformat()
+                        }
+                        for order in level.orders if order.status not in ["FILLED", "CANCELLED"]
+                    ]
+                }
+                for level in sorted(self.asks.values(), key=lambda x: x.price)
+                if any(order.status not in ["FILLED", "CANCELLED"] for order in level.orders)
+            ],
+            'timestamp': datetime.utcnow().isoformat()
         }
-        
-        logger.debug(f"Retrieving pending orders for {self.symbol}")
-        
-        # Sort bids in descending order (highest price first)
-        for price, level in sorted(self.bids.items(), reverse=True):
-            if level.total_quantity > 0:
-                for order in level.orders:
-                    if order.status in ["OPEN", "PARTIALLY_FILLED"]:
-                        pending_orders["bids"].append({
-                            "order_id": order.id,
-                            "price": str(price),
-                            "quantity": str(order.quantity),
-                            "filled_quantity": str(order.filled_quantity),
-                            "status": order.status,
-                            "timestamp": order.timestamp.isoformat()
-                        })
-                        logger.debug(f"Added order {order.id} to pending bids")
-        
-        # Sort asks in ascending order (lowest price first)
-        for price, level in sorted(self.asks.items()):
-            if level.total_quantity > 0:
-                for order in level.orders:
-                    if order.status in ["OPEN", "PARTIALLY_FILLED"]:
-                        pending_orders["asks"].append({
-                            "order_id": order.id,
-                            "price": str(price),
-                            "quantity": str(order.quantity),
-                            "filled_quantity": str(order.filled_quantity),
-                            "status": order.status,
-                            "timestamp": order.timestamp.isoformat()
-                        })
-                        logger.debug(f"Added order {order.id} to pending asks")
-        
-        logger.debug(f"Pending orders retrieved: {pending_orders}")
-        return pending_orders
 
     def get_top_levels(self, depth: int = 10) -> Dict:
         """Get top N levels of bids and asks.
@@ -347,18 +399,12 @@ class OrderBook:
         remaining_quantity = order.quantity
 
         if order.side == OrderSide.BUY:
-            # Match against asks (sell orders)
-            while remaining_quantity > 0 and self.asks:
+            while remaining_quantity > 0 and self.get_best_ask() and (order.price is not None and order.price >= self.get_best_ask().price or order.price==None):
                 best_ask = self.get_best_ask()
-                if not best_ask or not best_ask.orders:
+                if not best_ask.orders:
                     break
 
                 matching_order = best_ask.orders[0]
-                
-                # For limit orders, check if the prices cross
-                if order.order_type != OrderType.MARKET and order.price is not None and order.price < matching_order.price:
-                    break
-
                 trade_quantity = min(remaining_quantity, matching_order.quantity)
                 trade_price = best_ask.price
 
@@ -373,31 +419,35 @@ class OrderBook:
                 )
                 trades.append(trade)
 
+                # Update quantities
                 remaining_quantity -= trade_quantity
                 matching_order.quantity -= trade_quantity
-                matching_order.filled_quantity = trade_quantity
+                matching_order.filled_quantity += trade_quantity
 
-                if matching_order.quantity == 0:
-                    best_ask.remove_order(matching_order.id)
+                # Update order status and handle removal
+                if matching_order.quantity <= 0:
+                    # Only remove if fully filled
+                    best_ask.remove_order(matching_order)
                     matching_order.status = "FILLED"
-                    # Update best ask only if we removed an order
-                    # self._update_best_ask()
+                    # Update best ask if we removed the last order at this price
+                    if not best_ask.orders:
+                        del self.asks[best_ask.price]
+                        self._update_best_ask()
                 else:
+                    # Keep partially filled order in the book
                     matching_order.status = "PARTIALLY_FILLED"
+                    # Update best ask if we modified the quantity at this price
+                    if best_ask.price == self._best_ask.price:
+                        self._best_ask = best_ask
+                        logger.info(f"Updated best ask quantity to {best_ask.total_quantity} at price {best_ask.price}")
 
         else:  # SELL
-            # Match against bids (buy orders)
-            while remaining_quantity > 0 and self.bids:
+            while remaining_quantity > 0 and self.get_best_bid() and (order.price is not None and order.price <= self.get_best_bid().price or order.price==None):
                 best_bid = self.get_best_bid()
-                if not best_bid or not best_bid.orders:
+                if not best_bid.orders:
                     break
 
                 matching_order = best_bid.orders[0]
-                
-                # For limit orders, check if the prices cross
-                if order.order_type != OrderType.MARKET and order.price is not None and order.price > matching_order.price:
-                    break
-
                 trade_quantity = min(remaining_quantity, matching_order.quantity)
                 trade_price = best_bid.price
 
@@ -412,60 +462,34 @@ class OrderBook:
                 )
                 trades.append(trade)
 
+                # Update quantities
                 remaining_quantity -= trade_quantity
                 matching_order.quantity -= trade_quantity
-                matching_order.filled_quantity = trade_quantity
+                matching_order.filled_quantity+= trade_quantity
 
-                if matching_order.quantity == 0:
-                    best_bid.remove_order(matching_order.id)
+                # Update order status and handle removal
+                if matching_order.quantity <= 0:
+                    # Only remove if fully filled
+                    best_bid.remove_order(matching_order)
                     matching_order.status = "FILLED"
-                    # Update best bid only if we removed an order
-                    # self._update_best_bid()
+                    # Update best bid if we removed the last order at this price
+                    if not best_bid.orders:
+                        del self.bids[best_bid.price]
+                        self._update_best_bid()
                 else:
+                    # Keep partially filled order in the book
                     matching_order.status = "PARTIALLY_FILLED"
+                    # Update best bid if we modified the quantity at this price
+                    if best_bid.price == self._best_bid.price:
+                        self._best_bid = best_bid
+                        logger.info(f"Updated best bid quantity to {best_bid.total_quantity} at price {best_bid.price}")
 
-        # Update the order's remaining quantity and status
-        order.quantity = remaining_quantity
-        order.filled_quantity = order.quantity - remaining_quantity
-
-        if remaining_quantity == 0:
-            order.status = "FILLED"
-        elif order.filled_quantity > 0:
+        # Update the incoming order's status
+        if remaining_quantity > 0:
+            order.quantity = remaining_quantity
             order.status = "PARTIALLY_FILLED"
         else:
-            # order.status = "OPEN"
-            if order.order_type == OrderType.MARKET:
-                order.status="CANCELLED"
-            else:
-                order.status="OPEN"
-
-        # Only add the order to the book if it has remaining quantity
-        # if remaining_quantity > 0:
-        #     self.add_order(order)
+            order.status = "FILLED"
 
         return trades
 
-    def get_order_book_snapshot(self) -> dict:
-        """Get a snapshot of the order book."""
-        snapshot = {
-            "symbol": self.symbol,
-            "bids": [
-                {
-                    "price": str(price),
-                    "quantity": str(level.total_quantity),
-                    "orders": len(level.orders)
-                }
-                for price, level in sorted(self.bids.items(), reverse=True)
-            ],
-            "asks": [
-                {
-                    "price": str(price),
-                    "quantity": str(level.total_quantity),
-                    "orders": len(level.orders)
-                }
-                for price, level in sorted(self.asks.items())
-            ],
-            "timestamp": datetime.now(UTC).isoformat()
-        }
-        logger.debug(f"Retrieved order book snapshot for {self.symbol}: {snapshot}")
-        return snapshot

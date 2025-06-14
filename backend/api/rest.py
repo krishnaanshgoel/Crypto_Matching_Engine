@@ -1,19 +1,3 @@
-# from fastapi import APIRouter
-# from engine.order import Order
-# from engine.order_book import OrderBook
-
-# router = APIRouter()
-# order_book = OrderBook()
-
-# @router.post("/submit")
-# def submit_order(order_data: dict):
-#     order = Order.create(order_data)
-#     fills = order_book.add_order(order)
-#     return {
-#         "order_id": order.id,
-#         "fills": [f.to_dict() for f in fills]
-#     }
-
 
 from fastapi import APIRouter, HTTPException, Depends
 from typing import List, Dict, Optional
@@ -98,7 +82,8 @@ async def create_order(order_request: OrderRequest):
             "order_type": order.order_type.value,
             "quantity": str(order.quantity),
             "status": order.status,
-            "trades": [trade.dict() for trade in trades]
+            "trades": [trade.dict() for trade in trades],
+            "timestamp": datetime.utcnow().isoformat()
         }
         
         # Add optional fields if present

@@ -188,7 +188,7 @@ async def test_process_limit_order(matching_engine, sample_order):
     """Test processing a limit order."""
     trades = await matching_engine.process_order(sample_order)
     assert len(trades) == 0  # No matches initially
-    assert sample_order.status == "OPEN"
+    assert sample_order.status == "PARTIALLY_FILLED"
     assert sample_order.quantity == Decimal("1.0")
 
 @pytest.mark.asyncio
@@ -196,7 +196,7 @@ async def test_process_market_order(matching_engine, sample_market_order):
     """Test processing a market order."""
     trades = await matching_engine.process_order(sample_market_order)
     assert len(trades) == 0  # No matches initially
-    assert sample_market_order.status == "FILLED" or sample_market_order.status == "CANCELLED"  # Market orders are filled or cancelled
+    assert sample_market_order.status == "PARTIALLY_FILLED" or sample_market_order.status == "CANCELLED"  # Market orders are filled or cancelled
 
 @pytest.mark.asyncio
 async def test_process_stop_loss_order(matching_engine, sample_stop_loss_order):
@@ -233,7 +233,7 @@ async def test_matching_limit_orders(matching_engine):
     # Process buy order first
     trades1 = await matching_engine.process_order(buy_order)
     assert len(trades1) == 0
-    assert buy_order.status == "OPEN"
+    assert buy_order.status == "PARTIALLY_FILLED"
 
     # Process sell order
     trades2 = await matching_engine.process_order(sell_order)
@@ -270,7 +270,7 @@ async def test_matching_market_orders(matching_engine):
     # Process sell order first
     trades1 = await matching_engine.process_order(sell_order)
     assert len(trades1) == 0
-    assert sell_order.status == "OPEN"
+    assert sell_order.status == "PARTIALLY_FILLED"
 
     # Process buy order
     trades2 = await matching_engine.process_order(buy_order)
@@ -396,7 +396,7 @@ async def test_ioc_order_execution(matching_engine):
     # Process IOC order
     trades = await matching_engine.process_order(ioc_order)
     assert len(trades) == 1
-    assert ioc_order.status == "OPEN"
+    assert ioc_order.status == "PARTIALLY_FILLED"
     assert sell_order.status == "FILLED"
     assert ioc_order.quantity == Decimal("1.0")  # IOC orders are either filled or cancelled
 

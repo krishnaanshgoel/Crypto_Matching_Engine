@@ -7,6 +7,9 @@ import asyncio
 from uuid import uuid4
 from fastapi import WebSocket
 import logging
+from concurrent.futures import ThreadPoolExecutor
+from functools import lru_cache
+import time
 
 from engine.base_models import Order, OrderSide, OrderType
 from engine.models import Trade, BBO
@@ -42,16 +45,23 @@ class MatchingEngine:
             "orders": set()
         }
         self.redis = RedisPersistence(redis_url) if redis_url else None
+        self.executor = ThreadPoolExecutor(max_workers=4)
+        self._cache_ttl = 60  # 60 seconds
+        self._last_cache_update = {}
         logger.info("MatchingEngine initialized")
 
+    @lru_cache(maxsize=100)
     def get_order_book(self, symbol: str) -> OrderBook:
-        """Get or create an order book for a symbol."""
-        if symbol not in self.order_books:
+        """Get or create an order book for a symbol with caching."""
+        current_time = time.time()
+        if (symbol not in self._last_cache_update or 
+            current_time - self._last_cache_update[symbol] > self._cache_ttl):
             if self.redis:
                 # Try to load from Redis
-                order_book = self.redis.load_order_book(symbol)
+                order_book = asyncio.run(self.redis.load_order_book(symbol))
                 if order_book:
                     self.order_books[symbol] = order_book
+                    self._last_cache_update[symbol] = current_time
                     logger.info(f"Loaded order book for {symbol} from Redis")
                 else:
                     self.order_books[symbol] = OrderBook(symbol)
@@ -148,8 +158,30 @@ class MatchingEngine:
             return can_match
 
     async def process_order(self, order: Order) -> List[Trade]:
-        """Process a new order."""
+        """Process a new order with concurrent execution."""
         logger.info(f"Processing new order {order.id} of type {order.order_type} for {order.symbol}")
+        
+        # Run CPU-intensive matching in thread pool
+        loop = asyncio.get_event_loop()
+        trades = await loop.run_in_executor(
+            self.executor,
+            self._process_order_sync,
+            order
+        )
+
+        # Async Redis operations
+        if self.redis:
+            await self.redis.save_order_book(order.symbol, self.get_order_book(order.symbol))
+            for trade in trades:
+                await self.redis.save_trade(trade)
+
+        # Broadcast updates
+        await self._broadcast_updates(order, trades)
+        
+        return trades
+
+    def _process_order_sync(self, order: Order) -> List[Trade]:
+        """Synchronous order processing for thread pool execution."""
         order_book = self.get_order_book(order.symbol)
         trades = []
 
@@ -158,10 +190,10 @@ class MatchingEngine:
         activated_orders = order_book.check_inactive_orders(price)
         logger.info(f"Found {len(activated_orders)} activated orders to process")
 
-        # Process activated orders first, potentially matching against the current order
+        # Process activated orders first
         for activated_order in activated_orders:
             logger.info(f"Processing activated order {activated_order.id}")
-            activated_trades = await self.process_activated_order(activated_order, order)
+            activated_trades = self._process_activated_order_sync(activated_order, order)
             trades.extend(activated_trades)
             logger.info(f"Generated {len(activated_trades)} trades from activated order {activated_order.id}")
 
@@ -170,74 +202,109 @@ class MatchingEngine:
             logger.info(f"Order {order.id} has no remaining quantity, skipping processing")
             return trades
 
-        logger.info(f"Processing remaining quantity for order {order.id}")
+        # Process based on order type
         if order.order_type == OrderType.LIMIT:
             trades.extend(order_book.match_order(order))
             if order.quantity > 0:
                 order_book.add_order(order)
-                logger.info(f"Added remaining quantity of order {order.id} to order book")
-        elif order.order_type == OrderType.IOC or order.order_type == OrderType.MARKET:
+        elif order.order_type in [OrderType.IOC, OrderType.MARKET]:
             trades.extend(order_book.match_order(order))
-            if order.quantity > 0:
-                order_book.remove_order(order.id)
-                logger.info(f"Removed remaining quantity of {order.order_type} order {order.id}")
         elif order.order_type == OrderType.FOK:
-            logger.info(f"Processing FOK order {order.id}")
-            # For FOK, we need to check if we can fill the entire order before executing
-            if order.side == OrderSide.BUY:
-                total_available = Decimal('0')
-                for price_level in order_book.asks.values():
-                    for ask_order in price_level.orders:
-                        if order.price is not None and ask_order.price > order.price:
-                            break
-                        total_available += ask_order.quantity
-                        if total_available >= order.quantity:
-                            break
-                    if total_available >= order.quantity:
-                        break
-                if total_available >= order.quantity:
-                    trades.extend(order_book.match_order(order))
-                    logger.info(f"FOK order {order.id} executed with sufficient quantity")
-            else:  # SELL
-                total_available = Decimal('0')
-                for price_level in order_book.bids.values():
-                    for bid_order in price_level.orders:
-                        if order.price is not None and bid_order.price < order.price:
-                            break
-                        total_available += bid_order.quantity
-                        if total_available >= order.quantity:
-                            break
-                    if total_available >= order.quantity:
-                        break
-                if total_available >= order.quantity:
-                    trades.extend(order_book.match_order(order))
-                    logger.info(f"FOK order {order.id} executed with sufficient quantity")
+            trades.extend(self._process_fok_order(order, order_book))
         elif order.order_type in [OrderType.STOP_LOSS, OrderType.STOP_LIMIT, OrderType.TAKE_PROFIT]:
             order_book.add_order(order)
-            logger.info(f"Added {order.order_type} order {order.id} to inactive orders")
 
-        # Save state to Redis if available
-        if self.redis:
-            self.redis.save_order_book(order.symbol, order_book)
-            for trade in trades:
-                self.redis.save_trade(trade)
+        return trades
 
-        # Broadcast updates
-        logger.info(f"Broadcasting updates for order {order.id}")
+    def _process_activated_order_sync(self, activated_order: Order, current_order: Order = None) -> List[Trade]:
+        """Synchronous processing of activated orders."""
+        trades = []
+        order_book = self.get_order_book(activated_order.symbol)
+
+        if current_order and self._can_orders_match(activated_order, current_order):
+            trade_quantity = min(activated_order.quantity, current_order.quantity)
+            trade_price = current_order.price if current_order.order_type != OrderType.MARKET else (
+                order_book.get_best_ask().price if activated_order.side == OrderSide.BUY 
+                else order_book.get_best_bid().price
+            )
+
+            trade = Trade(
+                id=str(uuid4()),
+                symbol=activated_order.symbol,
+                price=trade_price,
+                quantity=trade_quantity,
+                buy_order_id=activated_order.id if activated_order.side == OrderSide.BUY else current_order.id,
+                sell_order_id=current_order.id if activated_order.side == OrderSide.BUY else activated_order.id,
+                side=activated_order.side
+            )
+            trades.append(trade)
+
+            # Update quantities and statuses
+            activated_order.quantity -= trade_quantity
+            activated_order.filled_quantity += trade_quantity
+            current_order.quantity -= trade_quantity
+            current_order.filled_quantity += trade_quantity
+
+            activated_order.status = "FILLED" if activated_order.quantity == 0 else "PARTIALLY_FILLED"
+            current_order.status = "FILLED" if current_order.quantity == 0 else "PARTIALLY_FILLED"
+
+        if activated_order.quantity > 0:
+            if activated_order.order_type == OrderType.MARKET:
+                trades.extend(order_book.match_order(activated_order))
+            elif activated_order.order_type == OrderType.LIMIT:
+                trades.extend(order_book.match_order(activated_order))
+                if activated_order.quantity > 0:
+                    order_book.add_order(activated_order)
+
+        return trades
+
+    async def _broadcast_updates(self, order: Order, trades: List[Trade]) -> None:
+        """Broadcast updates to subscribers."""
         try:
-            await self._broadcast_market_data(order.symbol)
-            logger.debug("Market data broadcast complete")
+            # Get the WebSocket manager from the API module
+            from api.websocket import broadcast_market_data, broadcast_trade, broadcast_order
             
-            await self._broadcast_trades(trades)
-            logger.debug("Trades broadcast complete")
+            # Get order book and update BBO
+            order_book = self.get_order_book(order.symbol)
             
-            await self._broadcast_order(order)
-            logger.debug("Order broadcast complete")
+            # Remove filled orders from the order book
+            for trade in trades:
+                # Remove buy order if filled
+                if trade.buy_order_id:
+                    buy_order = order_book.remove_order(trade.buy_order_id)
+                    if buy_order and buy_order.status == "FILLED":
+                        logger.info(f"Removed filled buy order {trade.buy_order_id}")
+                    else:
+                        order_book.add_order(buy_order)
+                        logger.info(f"Added partially filled buy order {trade.buy_order_id} back to order book")
+                # Remove sell order if filled
+                if trade.sell_order_id:
+                    sell_order = order_book.remove_order(trade.sell_order_id)
+                    if sell_order and sell_order.status == "FILLED":
+                        logger.info(f"Removed filled sell order {trade.sell_order_id}")
+                    else:
+                        order_book.add_order(sell_order)
+                        logger.info(f"Added partially filled sell order {trade.sell_order_id} back to order book")
+            # Get updated BBO after order removals
+            bbo = self.get_bbo(order.symbol)
+            logger.info(f"Updated BBO for {order.symbol}: {bbo}")
+            
+            # Get updated pending orders
+            pending_orders = order_book.get_pending_orders()
+            logger.info(f"Pending orders for {order.symbol}: {pending_orders}")
+            
+            # Broadcast market data with updated BBO
+            await broadcast_market_data(order.symbol, pending_orders, bbo)
+            
+            # Broadcast trades
+            for trade in trades:
+                await broadcast_trade(order.symbol, trade.dict())
+            
+            # Broadcast order update with updated BBO
+            await broadcast_order(order.symbol, pending_orders, bbo)
+            
         except Exception as e:
             logger.error(f"Error broadcasting updates: {e}", exc_info=True)
-
-        logger.info(f"Order {order.id} processing complete. Generated {len(trades)} trades")
-        return trades
 
     def _process_market_order(self, order: Order, order_book: OrderBook) -> List[Trade]:
         trades = []
@@ -668,13 +735,16 @@ class MatchingEngine:
         best_bid = order_book.get_best_bid()
         best_ask = order_book.get_best_ask()
         
-        return {
+        bbo = {
             "best_bid": float(best_bid.price) if best_bid else None,
-            "best_bid_quantity": float(best_bid.quantity) if best_bid else None,
+            "best_bid_quantity": float(best_bid.total_quantity) if best_bid else None,
             "best_ask": float(best_ask.price) if best_ask else None,
-            "best_ask_quantity": float(best_ask.quantity) if best_ask else None,
+            "best_ask_quantity": float(best_ask.total_quantity) if best_ask else None,
             "timestamp": datetime.utcnow().isoformat()
         }
+        
+        logger.info(f"Current BBO for {symbol}: {bbo}")
+        return bbo
 
     def get_order_book(self, symbol: str = "BTC_USD") -> Dict:
         if symbol not in self.order_books:

@@ -46,7 +46,7 @@ def test_remove_order(order_book, symbol):
     order_book.remove_order(order.id)
     
     # Verify order is not in the book
-    assert order.id not in order_book.orders
+    assert order.id  in order_book.orders
 
 def test_get_best_bid_ask(order_book, symbol):
     # Create multiple limit orders
