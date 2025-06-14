@@ -5,6 +5,8 @@ from datetime import datetime
 from engine.base_models import Order, OrderSide, OrderType
 from engine.matching_engine import MatchingEngine
 from engine.order_book import OrderBook
+import pytest
+from uuid import uuid4
 
 class TestMatchingEngine(unittest.TestCase):
     def setUp(self):
@@ -141,6 +143,262 @@ class TestMatchingEngine(unittest.TestCase):
        self.assertEqual(trades[0].quantity, Decimal('0.5'))
        self.assertEqual(trades[0].price, Decimal('50000.0'))
 
+@pytest.fixture
+def matching_engine():
+    return MatchingEngine()
+
+@pytest.fixture
+def sample_order():
+    return Order(
+        id=str(uuid4()),
+        symbol="BTC_USD",
+        side=OrderSide.BUY,
+        order_type=OrderType.LIMIT,
+        quantity=Decimal("1.0"),
+        price=Decimal("50000.0"),
+        timestamp=datetime.utcnow()
+    )
+
+@pytest.fixture
+def sample_market_order():
+    return Order(
+        id=str(uuid4()),
+        symbol="BTC_USD",
+        side=OrderSide.BUY,
+        order_type=OrderType.MARKET,
+        quantity=Decimal("1.0"),
+        timestamp=datetime.utcnow()
+    )
+
+@pytest.fixture
+def sample_stop_loss_order():
+    return Order(
+        id=str(uuid4()),
+        symbol="BTC_USD",
+        side=OrderSide.BUY,
+        order_type=OrderType.STOP_LOSS,
+        quantity=Decimal("1.0"),
+        price=Decimal("45000.0"),
+        stop_price=Decimal("45000.0"),
+        timestamp=datetime.utcnow()
+    )
+
+@pytest.mark.asyncio
+async def test_process_limit_order(matching_engine, sample_order):
+    """Test processing a limit order."""
+    trades = await matching_engine.process_order(sample_order)
+    assert len(trades) == 0  # No matches initially
+    assert sample_order.status == "OPEN"
+    assert sample_order.quantity == Decimal("1.0")
+
+@pytest.mark.asyncio
+async def test_process_market_order(matching_engine, sample_market_order):
+    """Test processing a market order."""
+    trades = await matching_engine.process_order(sample_market_order)
+    assert len(trades) == 0  # No matches initially
+    assert sample_market_order.status == "FILLED"  # Market orders are filled or cancelled
+
+@pytest.mark.asyncio
+async def test_process_stop_loss_order(matching_engine, sample_stop_loss_order):
+    """Test processing a stop loss order."""
+    trades = await matching_engine.process_order(sample_stop_loss_order)
+    assert len(trades) == 0  # No matches initially
+    assert sample_stop_loss_order.status == "OPEN"
+
+@pytest.mark.asyncio
+async def test_matching_limit_orders(matching_engine):
+    """Test matching two limit orders."""
+    # Create a buy order
+    buy_order = Order(
+        id=str(uuid4()),
+        symbol="BTC_USD",
+        side=OrderSide.BUY,
+        order_type=OrderType.LIMIT,
+        quantity=Decimal("1.0"),
+        price=Decimal("50000.0"),
+        timestamp=datetime.utcnow()
+    )
+
+    # Create a matching sell order
+    sell_order = Order(
+        id=str(uuid4()),
+        symbol="BTC_USD",
+        side=OrderSide.SELL,
+        order_type=OrderType.LIMIT,
+        quantity=Decimal("1.0"),
+        price=Decimal("50000.0"),
+        timestamp=datetime.utcnow()
+    )
+
+    # Process buy order first
+    trades1 = await matching_engine.process_order(buy_order)
+    assert len(trades1) == 0
+    assert buy_order.status == "OPEN"
+
+    # Process sell order
+    trades2 = await matching_engine.process_order(sell_order)
+    assert len(trades2) == 1
+    assert trades2[0].quantity == Decimal("1.0")
+    assert trades2[0].price == Decimal("50000.0")
+    assert buy_order.status == "FILLED"
+    assert sell_order.status == "FILLED"
+
+@pytest.mark.asyncio
+async def test_matching_market_orders(matching_engine):
+    """Test matching market orders with limit orders."""
+    # Create a limit sell order
+    sell_order = Order(
+        id=str(uuid4()),
+        symbol="BTC_USD",
+        side=OrderSide.SELL,
+        order_type=OrderType.LIMIT,
+        quantity=Decimal("1.0"),
+        price=Decimal("50000.0"),
+        timestamp=datetime.utcnow()
+    )
+
+    # Create a market buy order
+    buy_order = Order(
+        id=str(uuid4()),
+        symbol="BTC_USD",
+        side=OrderSide.BUY,
+        order_type=OrderType.MARKET,
+        quantity=Decimal("1.0"),
+        timestamp=datetime.utcnow()
+    )
+
+    # Process sell order first
+    trades1 = await matching_engine.process_order(sell_order)
+    assert len(trades1) == 0
+    assert sell_order.status == "OPEN"
+
+    # Process buy order
+    trades2 = await matching_engine.process_order(buy_order)
+    assert len(trades2) == 1
+    assert trades2[0].quantity == Decimal("1.0")
+    assert trades2[0].price == Decimal("50000.0")
+    assert sell_order.status == "FILLED"
+    assert buy_order.status == "FILLED"
+
+@pytest.mark.asyncio
+async def test_stop_loss_activation(matching_engine):
+    """Test stop loss order activation and execution."""
+    # Create a stop loss order
+    stop_loss = Order(
+        id=str(uuid4()),
+        symbol="BTC_USD",
+        side=OrderSide.SELL,
+        order_type=OrderType.STOP_LOSS,
+        quantity=Decimal("1.0"),
+        price=Decimal("45000.0"),
+        stop_price=Decimal("45000.0"),
+        timestamp=datetime.utcnow()
+    )
+
+    # Create a matching buy order
+    buy_order = Order(
+        id=str(uuid4()),
+        symbol="BTC_USD",
+        side=OrderSide.BUY,
+        order_type=OrderType.LIMIT,
+        quantity=Decimal("1.0"),
+        price=Decimal("45000.0"),
+        timestamp=datetime.utcnow()
+    )
+
+    # Process stop loss order first
+    trades1 = await matching_engine.process_order(stop_loss)
+    assert len(trades1) == 0
+    assert stop_loss.status == "OPEN"
+
+    # Process buy order to trigger stop loss
+    trades2 = await matching_engine.process_order(buy_order)
+    assert len(trades2) == 1
+    assert trades2[0].quantity == Decimal("1.0")
+    assert trades2[0].price == Decimal("45000.0")
+    assert stop_loss.status == "FILLED"
+    assert buy_order.status == "FILLED"
+
+@pytest.mark.asyncio
+async def test_fok_order_execution(matching_engine):
+    """Test Fill-or-Kill order execution."""
+    # Create a FOK order
+    fok_order = Order(
+        id=str(uuid4()),
+        symbol="BTC_USD",
+        side=OrderSide.BUY,
+        order_type=OrderType.FOK,
+        quantity=Decimal("2.0"),
+        price=Decimal("50000.0"),
+        timestamp=datetime.utcnow()
+    )
+
+    # Create two matching sell orders
+    sell_order1 = Order(
+        id=str(uuid4()),
+        symbol="BTC_USD",
+        side=OrderSide.SELL,
+        order_type=OrderType.LIMIT,
+        quantity=Decimal("1.0"),
+        price=Decimal("50000.0"),
+        timestamp=datetime.utcnow()
+    )
+
+    sell_order2 = Order(
+        id=str(uuid4()),
+        symbol="BTC_USD",
+        side=OrderSide.SELL,
+        order_type=OrderType.LIMIT,
+        quantity=Decimal("1.0"),
+        price=Decimal("50000.0"),
+        timestamp=datetime.utcnow()
+    )
+
+    # Process sell orders first
+    await matching_engine.process_order(sell_order1)
+    await matching_engine.process_order(sell_order2)
+
+    # Process FOK order
+    trades = await matching_engine.process_order(fok_order)
+    assert len(trades) == 2
+    assert fok_order.status == "FILLED"
+    assert sell_order1.status == "FILLED"
+    assert sell_order2.status == "FILLED"
+
+@pytest.mark.asyncio
+async def test_ioc_order_execution(matching_engine):
+    """Test Immediate-or-Cancel order execution."""
+    # Create an IOC order
+    ioc_order = Order(
+        id=str(uuid4()),
+        symbol="BTC_USD",
+        side=OrderSide.BUY,
+        order_type=OrderType.IOC,
+        quantity=Decimal("2.0"),
+        price=Decimal("50000.0"),
+        timestamp=datetime.utcnow()
+    )
+
+    # Create a matching sell order
+    sell_order = Order(
+        id=str(uuid4()),
+        symbol="BTC_USD",
+        side=OrderSide.SELL,
+        order_type=OrderType.LIMIT,
+        quantity=Decimal("1.0"),
+        price=Decimal("50000.0"),
+        timestamp=datetime.utcnow()
+    )
+
+    # Process sell order first
+    await matching_engine.process_order(sell_order)
+
+    # Process IOC order
+    trades = await matching_engine.process_order(ioc_order)
+    assert len(trades) == 1
+    assert ioc_order.status == "FILLED"
+    assert sell_order.status == "FILLED"
+    assert ioc_order.quantity == Decimal("0.0")  # IOC orders are either filled or cancelled
 
 if __name__ == '__main__':
     unittest.main() 

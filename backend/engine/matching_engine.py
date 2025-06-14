@@ -13,7 +13,14 @@ from engine.models import Trade, BBO
 from engine.order_book import OrderBook
 
 # Configure logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('matching_engine.log'),
+        logging.StreamHandler()
+    ]
+)
 logger = logging.getLogger(__name__)
 
 # Global dictionary to store engine instances
@@ -33,22 +40,24 @@ class MatchingEngine:
             "trades": set(),
             "orders": set()
         }
-        logger.debug("MatchingEngine initialized")
+        logger.info("MatchingEngine initialized")
 
     def get_order_book(self, symbol: str) -> OrderBook:
         """Get or create an order book for a symbol."""
         if symbol not in self.order_books:
             self.order_books[symbol] = OrderBook(symbol)
-            logger.debug(f"Created new order book for {symbol}")
+            logger.info(f"Created new order book for {symbol}")
         return self.order_books[symbol]
 
     async def process_activated_order(self, activated_order: Order, current_order: Order = None) -> List[Trade]:
         """Process an activated order, potentially matching against the current order."""
+        logger.info(f"Processing activated order {activated_order.id} of type {activated_order.order_type}")
         trades = []
         order_book = self.get_order_book(activated_order.symbol)
 
         # If we have a current order and it can match with the activated order
         if current_order and self._can_orders_match(activated_order, current_order):
+            logger.info(f"Attempting to match activated order {activated_order.id} with current order {current_order.id}")
             # Match the activated order against the current order
             trade_quantity = min(activated_order.quantity, current_order.quantity)
             trade_price = current_order.price if current_order.order_type != OrderType.MARKET else (
@@ -66,6 +75,7 @@ class MatchingEngine:
                 side=activated_order.side
             )
             trades.append(trade)
+            logger.info(f"Created trade {trade.id} between orders {activated_order.id} and {current_order.id}")
 
             # Update quantities
             activated_order.quantity -= trade_quantity
@@ -76,22 +86,28 @@ class MatchingEngine:
             # Update statuses
             if activated_order.quantity == 0:
                 activated_order.status = "FILLED"
+                logger.info(f"Activated order {activated_order.id} fully filled")
             else:
                 activated_order.status = "PARTIALLY_FILLED"
+                logger.info(f"Activated order {activated_order.id} partially filled")
 
             if current_order.quantity == 0:
                 current_order.status = "FILLED"
+                logger.info(f"Current order {current_order.id} fully filled")
             else:
                 current_order.status = "PARTIALLY_FILLED"
+                logger.info(f"Current order {current_order.id} partially filled")
 
         # If activated order still has quantity, process it normally
         if activated_order.quantity > 0:
+            logger.info(f"Processing remaining quantity for activated order {activated_order.id}")
             if activated_order.order_type == OrderType.MARKET:
                 trades.extend(order_book.match_order(activated_order))
             elif activated_order.order_type == OrderType.LIMIT:
                 trades.extend(order_book.match_order(activated_order))
                 if activated_order.quantity > 0:
                     order_book.add_order(activated_order)
+                    logger.info(f"Added remaining quantity of activated order {activated_order.id} to order book")
             elif activated_order.order_type in [OrderType.IOC, OrderType.FOK]:
                 trades.extend(order_book.match_order(activated_order))
 
@@ -99,34 +115,43 @@ class MatchingEngine:
 
     def _can_orders_match(self, order1: Order, order2: Order) -> bool:
         """Check if two orders can match with each other."""
+        logger.debug(f"Checking if orders {order1.id} and {order2.id} can match")
         if order1.side == order2.side:
+            logger.debug("Orders are on the same side, cannot match")
             return False
 
         # For market orders, they can always match
         if order1.order_type == OrderType.MARKET or order2.order_type == OrderType.MARKET:
+            logger.debug("One or both orders are market orders, can match")
             return True
 
         # For limit orders, check if prices cross
         if order1.side == OrderSide.BUY:
-            return order1.price >= order2.price
+            can_match = order1.price >= order2.price
+            logger.debug(f"Buy order {order1.id} price {order1.price} {'can' if can_match else 'cannot'} match with sell order {order2.id} price {order2.price}")
+            return can_match
         else:
-            return order1.price <= order2.price
+            can_match = order1.price <= order2.price
+            logger.debug(f"Sell order {order1.id} price {order1.price} {'can' if can_match else 'cannot'} match with buy order {order2.id} price {order2.price}")
+            return can_match
 
     async def process_order(self, order: Order) -> List[Trade]:
         """Process a new order."""
-        logger.debug(f"Processing order: {order.id} for {order.symbol}")
+        logger.info(f"Processing new order {order.id} of type {order.order_type} for {order.symbol}")
         order_book = self.get_order_book(order.symbol)
         trades = []
 
         # Check for inactive orders that should be triggered
         price = order.price if order.price is not None else order_book.get_best_bid_ask()[0]
         activated_orders = order_book.check_inactive_orders(price)
-        print("activated_orders", activated_orders)
+        logger.info(f"Found {len(activated_orders)} activated orders to process")
 
         # Process activated orders first, potentially matching against the current order
         for activated_order in activated_orders:
+            logger.info(f"Processing activated order {activated_order.id}")
             activated_trades = await self.process_activated_order(activated_order, order)
             trades.extend(activated_trades)
+            logger.info(f"Generated {len(activated_trades)} trades from activated order {activated_order.id}")
 
         # Process the new order
         # if order.order_type == OrderType.MARKET:
@@ -135,15 +160,20 @@ class MatchingEngine:
         #         order_book.add_order(order)
         if order.quantity<=0:
             return trades
+
+        logger.info(f"Processing remaining quantity for order {order.id}")
         if order.order_type == OrderType.LIMIT:
             trades.extend(order_book.match_order(order))
             if order.quantity > 0:
                 order_book.add_order(order)
+                logger.info(f"Added remaining quantity of order {order.id} to order book")
         elif order.order_type == OrderType.IOC or order.order_type == OrderType.MARKET:
             trades.extend(order_book.match_order(order))
             if order.quantity > 0:
                 order_book.remove_order(order.id)
-        elif order.order_type == OrderType.FOK :
+                logger.info(f"Removed remaining quantity of {order.order_type} order {order.id}")
+        elif order.order_type == OrderType.FOK:
+            logger.info(f"Processing FOK order {order.id}")
             # For FOK, we need to check if we can fill the entire order before executing
             if order.side == OrderSide.BUY:
                 total_available = Decimal('0')
@@ -158,6 +188,7 @@ class MatchingEngine:
                         break
                 if total_available >= order.quantity:
                     trades.extend(order_book.match_order(order))
+                    logger.info(f"FOK order {order.id} executed with sufficient quantity")
             else:  # SELL
                 total_available = Decimal('0')
                 for price_level in order_book.bids.values():
@@ -171,13 +202,13 @@ class MatchingEngine:
                         break
                 if total_available >= order.quantity:
                     trades.extend(order_book.match_order(order))
+                    logger.info(f"FOK order {order.id} executed with sufficient quantity")
         elif order.order_type in [OrderType.STOP_LOSS, OrderType.STOP_LIMIT, OrderType.TAKE_PROFIT]:
             order_book.add_order(order)
-        
-        print("order_book", order_book)
+            logger.info(f"Added {order.order_type} order {order.id} to inactive orders")
 
         # Broadcast updates
-        logger.debug(f"Broadcasting updates for order {order.id}")
+        logger.info(f"Broadcasting updates for order {order.id}")
         try:
             await self._broadcast_market_data(order.symbol)
             logger.debug("Market data broadcast complete")
@@ -190,8 +221,7 @@ class MatchingEngine:
         except Exception as e:
             logger.error(f"Error broadcasting updates: {e}", exc_info=True)
 
-        logger.debug(f"Order {order.id} processed and added to order book for {order.symbol}")
-
+        logger.info(f"Order {order.id} processing complete. Generated {len(trades)} trades")
         return trades
 
     def _process_market_order(self, order: Order, order_book: OrderBook) -> List[Trade]:
