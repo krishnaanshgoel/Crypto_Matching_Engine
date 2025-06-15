@@ -1,4 +1,4 @@
-# GoQuant5 - High-Performance Trading Engine
+# GoQuant - High-Performance Trading Engine
 
 A high-performance, real-time trading engine built with FastAPI, WebSocket support, and Redis persistence. This project implements a complete order matching engine with support for various order types, real-time market data, and comprehensive logging.
 
