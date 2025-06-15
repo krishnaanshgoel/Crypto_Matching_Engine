@@ -1577,3 +1577,717 @@ Traceback (most recent call last):
                                  ^^^^^^^^
 AttributeError: 'NoneType' object has no attribute 'id'
 2025-06-14 23:58:46,250 - engine.websocket_manager - INFO - Client 31d9c876-0773-4893-b56f-33ef40b0961b disconnected from market_data_BTC_USD after 0:00:39.186162
+2025-06-15 12:47:47,555 - engine.redis_persistence - INFO - Redis connection pool initialized
+2025-06-15 12:47:47,556 - engine.matching_engine - INFO - MatchingEngine initialized
+2025-06-15 12:49:44,713 - engine.matching_engine - INFO - Processing new order a357bb8e-d671-4d0c-9cfd-dc281b4f3576 of type OrderType.LIMIT for BTC_USD
+2025-06-15 12:49:44,729 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 12:49:46,366 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 12:49:46,366 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 15000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:19:46.366894'}
+2025-06-15 12:49:46,366 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 15000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:19:46.366894'}
+2025-06-15 12:49:46,366 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '15000.0', 'quantity': '10.0', 'orders': [{'id': 'a357bb8e-d671-4d0c-9cfd-dc281b4f3576', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:19:44.713391'}]}], 'asks': [], 'timestamp': '2025-06-15T07:19:46.366894'}
+2025-06-15 12:49:52,751 - engine.websocket_manager - INFO - Client 3c4212d2-f2cd-4b19-953e-815943e52ff3 connected to channel market_data_BTC_USD
+2025-06-15 12:49:52,752 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 15000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:19:52.752702'}
+2025-06-15 12:50:22,609 - engine.websocket_manager - INFO - Client 3c4212d2-f2cd-4b19-953e-815943e52ff3 disconnected from market_data_BTC_USD after 0:00:29.858571
+2025-06-15 12:59:19,978 - engine.matching_engine - INFO - Processing new order 8e88145a-fa95-4c18-85e8-3b5a22089c06 of type OrderType.LIMIT for BTC_USD
+2025-06-15 12:59:19,994 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 12:59:20,659 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 12:59:20,662 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:29:20.662131'}
+2025-06-15 12:59:20,663 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:29:20.662131'}
+2025-06-15 12:59:20,666 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '25000.0', 'quantity': '10.0', 'orders': [{'id': '8e88145a-fa95-4c18-85e8-3b5a22089c06', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:29:19.978445'}]}, {'price': '15000.0', 'quantity': '10.0', 'orders': [{'id': 'a357bb8e-d671-4d0c-9cfd-dc281b4f3576', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:19:44.713391'}]}], 'asks': [], 'timestamp': '2025-06-15T07:29:20.664677'}
+2025-06-15 12:59:45,569 - engine.matching_engine - INFO - Processing new order cdcf32a6-7d93-425f-9ad3-993d368b78c8 of type OrderType.MARKET for BTC_USD
+2025-06-15 12:59:45,569 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 12:59:45,586 - engine.order_book - INFO - Updated best bid to price 15000.0 with 1 orders and total quantity 10.0
+2025-06-15 12:59:46,249 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 12:59:46,603 - engine.redis_persistence - INFO - Trade f1b641d1-2299-4b5e-93c4-eadc5c45beb9 saved
+2025-06-15 12:59:46,603 - engine.order_book - INFO - Removing order 8e88145a-fa95-4c18-85e8-3b5a22089c06 from order book
+2025-06-15 12:59:46,603 - engine.order_book - WARNING - Order 8e88145a-fa95-4c18-85e8-3b5a22089c06 not found in order book
+2025-06-15 12:59:46,607 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:08:56,550 - engine.matching_engine - INFO - Processing new order 500ffa69-7973-4f7c-b4d4-45de53fa7ce7 of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:08:56,553 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:08:56,898 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:08:56,898 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 30000.0, 'best_bid_quantity': 30.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:38:56.898379'}
+2025-06-15 13:08:56,899 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 30000.0, 'best_bid_quantity': 30.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:38:56.898379'}
+2025-06-15 13:08:56,901 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '30000.0', 'quantity': '30.0', 'orders': [{'id': '500ffa69-7973-4f7c-b4d4-45de53fa7ce7', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '30.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:38:56.550425'}]}, {'price': '15000.0', 'quantity': '10.0', 'orders': [{'id': 'a357bb8e-d671-4d0c-9cfd-dc281b4f3576', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:19:44.713391'}]}], 'asks': [], 'timestamp': '2025-06-15T07:38:56.900639'}
+2025-06-15 13:09:11,236 - engine.matching_engine - INFO - Processing new order 0d6c930e-139e-42dd-b207-ef0c9ee3fab0 of type OrderType.MARKET for BTC_USD
+2025-06-15 13:09:11,238 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:09:11,239 - engine.order_book - INFO - Updated best bid to price 15000.0 with 1 orders and total quantity 10.0
+2025-06-15 13:09:11,772 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:09:12,363 - engine.redis_persistence - INFO - Trade 0cd1132b-8390-4d49-aebe-7a983941eb99 saved
+2025-06-15 13:09:12,363 - engine.order_book - INFO - Removing order 500ffa69-7973-4f7c-b4d4-45de53fa7ce7 from order book
+2025-06-15 13:09:12,363 - engine.order_book - WARNING - Order 500ffa69-7973-4f7c-b4d4-45de53fa7ce7 not found in order book
+2025-06-15 13:09:12,363 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:09:32,703 - engine.matching_engine - INFO - Processing new order 9450cf66-34ae-40ce-ae2f-ab0b0b558049 of type OrderType.MARKET for BTC_USD
+2025-06-15 13:09:32,703 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:09:32,703 - engine.order_book - INFO - Updated best bid quantity to 10.0 at price 15000.0
+2025-06-15 13:09:33,132 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:09:33,533 - engine.redis_persistence - INFO - Trade c67e4cf5-098c-4feb-b0d9-0166feb34d59 saved
+2025-06-15 13:09:33,534 - engine.order_book - INFO - Removing order a357bb8e-d671-4d0c-9cfd-dc281b4f3576 from order book
+2025-06-15 13:09:33,534 - engine.order_book - INFO - Removing order from best bid level at price 15000.0
+2025-06-15 13:09:33,534 - engine.order_book - INFO - No bids left, best bid set to None
+2025-06-15 13:09:33,536 - engine.matching_engine - INFO - Added partially filled buy order a357bb8e-d671-4d0c-9cfd-dc281b4f3576 back to order book
+2025-06-15 13:09:33,537 - engine.order_book - INFO - Removing order 9450cf66-34ae-40ce-ae2f-ab0b0b558049 from order book
+2025-06-15 13:09:33,537 - engine.order_book - WARNING - Order 9450cf66-34ae-40ce-ae2f-ab0b0b558049 not found in order book
+2025-06-15 13:09:33,538 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 286, in _broadcast_updates
+    order_book.add_order(sell_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:09:56,395 - engine.matching_engine - INFO - Processing new order 67ecd514-a9b4-4287-81a4-6fe301c31032 of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:09:56,395 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:09:56,801 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:09:56,811 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 15000.0, 'best_bid_quantity': 5.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:39:56.811865'}
+2025-06-15 13:09:56,811 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 15000.0, 'best_bid_quantity': 5.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:39:56.811865'}
+2025-06-15 13:09:56,811 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '15000.0', 'quantity': '5.0', 'orders': [{'id': 'a357bb8e-d671-4d0c-9cfd-dc281b4f3576', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '5.0', 'filled_quantity': '5.0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:19:44.713391'}]}, {'price': '10000.0', 'quantity': '10.0', 'orders': [{'id': '67ecd514-a9b4-4287-81a4-6fe301c31032', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:39:56.395102'}]}], 'asks': [], 'timestamp': '2025-06-15T07:39:56.811865'}
+2025-06-15 13:10:14,489 - engine.matching_engine - INFO - Processing new order fd49f9f3-70a2-4893-9f5f-f03052f1fbc7 of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:10:14,490 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:10:14,903 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:10:14,903 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 15000.0, 'best_bid_quantity': 5.0, 'best_ask': 30000.0, 'best_ask_quantity': 30.0, 'timestamp': '2025-06-15T07:40:14.903851'}
+2025-06-15 13:10:14,903 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 15000.0, 'best_bid_quantity': 5.0, 'best_ask': 30000.0, 'best_ask_quantity': 30.0, 'timestamp': '2025-06-15T07:40:14.903851'}
+2025-06-15 13:10:14,903 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '15000.0', 'quantity': '5.0', 'orders': [{'id': 'a357bb8e-d671-4d0c-9cfd-dc281b4f3576', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '5.0', 'filled_quantity': '5.0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:19:44.713391'}]}, {'price': '10000.0', 'quantity': '10.0', 'orders': [{'id': '67ecd514-a9b4-4287-81a4-6fe301c31032', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:39:56.395102'}]}], 'asks': [{'price': '30000.0', 'quantity': '30.0', 'orders': [{'id': 'fd49f9f3-70a2-4893-9f5f-f03052f1fbc7', 'side': 'SELL', 'type': 'LIMIT', 'quantity': '30.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:40:14.489306'}]}], 'timestamp': '2025-06-15T07:40:14.903851'}
+2025-06-15 13:11:06,619 - engine.matching_engine - INFO - Processing new order d8e6f701-228d-4842-9d46-f4a42cfdffa8 of type OrderType.IOC for BTC_USD
+2025-06-15 13:11:06,619 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:11:07,035 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:11:07,035 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 15000.0, 'best_bid_quantity': 5.0, 'best_ask': 30000.0, 'best_ask_quantity': 30.0, 'timestamp': '2025-06-15T07:41:07.035554'}
+2025-06-15 13:11:07,035 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 15000.0, 'best_bid_quantity': 5.0, 'best_ask': 30000.0, 'best_ask_quantity': 30.0, 'timestamp': '2025-06-15T07:41:07.035554'}
+2025-06-15 13:11:07,035 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '15000.0', 'quantity': '5.0', 'orders': [{'id': 'a357bb8e-d671-4d0c-9cfd-dc281b4f3576', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '5.0', 'filled_quantity': '5.0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:19:44.713391'}]}, {'price': '10000.0', 'quantity': '10.0', 'orders': [{'id': '67ecd514-a9b4-4287-81a4-6fe301c31032', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:39:56.395102'}]}], 'asks': [{'price': '30000.0', 'quantity': '30.0', 'orders': [{'id': 'fd49f9f3-70a2-4893-9f5f-f03052f1fbc7', 'side': 'SELL', 'type': 'LIMIT', 'quantity': '30.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:40:14.489306'}]}], 'timestamp': '2025-06-15T07:41:07.035554'}
+2025-06-15 13:11:42,561 - engine.matching_engine - INFO - Processing new order a5c8737e-2b7d-4fdb-8bff-aae9532b72a6 of type OrderType.MARKET for BTC_USD
+2025-06-15 13:11:42,561 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:11:42,561 - engine.order_book - INFO - Updated best bid to price 10000.0 with 1 orders and total quantity 10.0
+2025-06-15 13:11:42,936 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:11:43,269 - engine.redis_persistence - INFO - Trade 63be52d7-6aa6-4433-9fdc-97e40206d096 saved
+2025-06-15 13:11:43,269 - engine.order_book - INFO - Removing order a357bb8e-d671-4d0c-9cfd-dc281b4f3576 from order book
+2025-06-15 13:11:43,269 - engine.order_book - WARNING - Order a357bb8e-d671-4d0c-9cfd-dc281b4f3576 not found in order book
+2025-06-15 13:11:43,283 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:12:10,412 - engine.matching_engine - INFO - Processing new order 85920b9c-1d51-4fbf-9102-b3ff57a241bb of type OrderType.IOC for BTC_USD
+2025-06-15 13:12:10,412 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:12:10,414 - engine.order_book - INFO - No bids left, best bid set to None
+2025-06-15 13:12:10,885 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:12:11,283 - engine.redis_persistence - INFO - Trade 2e2e5038-ea56-4971-bf43-b67530e6db9e saved
+2025-06-15 13:12:11,283 - engine.order_book - INFO - Removing order 67ecd514-a9b4-4287-81a4-6fe301c31032 from order book
+2025-06-15 13:12:11,284 - engine.order_book - WARNING - Order 67ecd514-a9b4-4287-81a4-6fe301c31032 not found in order book
+2025-06-15 13:12:11,285 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:12:27,103 - engine.matching_engine - INFO - Processing new order a2481d1b-2876-4384-87b3-34cc0b55c8a1 of type OrderType.FOK for BTC_USD
+2025-06-15 13:12:27,103 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:12:27,438 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:12:27,454 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': None, 'best_bid_quantity': None, 'best_ask': 30000.0, 'best_ask_quantity': 30.0, 'timestamp': '2025-06-15T07:42:27.454664'}
+2025-06-15 13:12:27,454 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': None, 'best_bid_quantity': None, 'best_ask': 30000.0, 'best_ask_quantity': 30.0, 'timestamp': '2025-06-15T07:42:27.454664'}
+2025-06-15 13:12:27,454 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [], 'asks': [{'price': '30000.0', 'quantity': '30.0', 'orders': [{'id': 'fd49f9f3-70a2-4893-9f5f-f03052f1fbc7', 'side': 'SELL', 'type': 'LIMIT', 'quantity': '30.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:40:14.489306'}]}], 'timestamp': '2025-06-15T07:42:27.454664'}
+2025-06-15 13:12:59,369 - engine.matching_engine - INFO - Processing new order 7bae4da1-374a-40bb-a47f-0fbd6ae31159 of type OrderType.MARKET for BTC_USD
+2025-06-15 13:12:59,369 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:12:59,369 - engine.order_book - INFO - Updated best ask quantity to 30.0 at price 30000.0
+2025-06-15 13:12:59,836 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:13:00,222 - engine.redis_persistence - INFO - Trade ffeb58ee-7345-46ec-8ab1-f6d02002f0d3 saved
+2025-06-15 13:13:00,222 - engine.order_book - INFO - Removing order 7bae4da1-374a-40bb-a47f-0fbd6ae31159 from order book
+2025-06-15 13:13:00,222 - engine.order_book - WARNING - Order 7bae4da1-374a-40bb-a47f-0fbd6ae31159 not found in order book
+2025-06-15 13:13:00,222 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:13:09,753 - engine.matching_engine - INFO - Processing new order 2e054ad2-dd81-46cd-a609-d64e8d060afb of type OrderType.MARKET for BTC_USD
+2025-06-15 13:13:09,756 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:13:09,760 - engine.order_book - INFO - No asks left, best ask set to None
+2025-06-15 13:13:09,761 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:13:10,153 - engine.redis_persistence - INFO - Trade 8098cb75-da5e-4e3d-abcf-c4b53331d9c6 saved
+2025-06-15 13:13:10,153 - engine.order_book - INFO - Removing order 2e054ad2-dd81-46cd-a609-d64e8d060afb from order book
+2025-06-15 13:13:10,153 - engine.order_book - WARNING - Order 2e054ad2-dd81-46cd-a609-d64e8d060afb not found in order book
+2025-06-15 13:13:10,153 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:13:32,967 - engine.matching_engine - INFO - Processing new order 48e51a7a-4263-490b-a55c-2bf61eb6e126 of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:13:32,968 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:13:33,346 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:13:33,346 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': None, 'best_bid_quantity': None, 'best_ask': 30000.0, 'best_ask_quantity': 10.0, 'timestamp': '2025-06-15T07:43:33.346767'}
+2025-06-15 13:13:33,346 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': None, 'best_bid_quantity': None, 'best_ask': 30000.0, 'best_ask_quantity': 10.0, 'timestamp': '2025-06-15T07:43:33.346767'}
+2025-06-15 13:13:33,346 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [], 'asks': [{'price': '30000.0', 'quantity': '10.0', 'orders': [{'id': '48e51a7a-4263-490b-a55c-2bf61eb6e126', 'side': 'SELL', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:43:32.967226'}]}], 'timestamp': '2025-06-15T07:43:33.346767'}
+2025-06-15 13:13:41,085 - engine.matching_engine - INFO - Processing new order 55ddc575-f30d-4d27-be1b-ade9602bf9c5 of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:13:41,085 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:13:41,085 - engine.order_book - INFO - Updated best ask quantity to 10.0 at price 30000.0
+2025-06-15 13:13:41,437 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:13:41,790 - engine.redis_persistence - INFO - Trade 488b0e25-2713-4647-aa3e-82c2fe6e20d3 saved
+2025-06-15 13:13:41,790 - engine.order_book - INFO - Removing order 55ddc575-f30d-4d27-be1b-ade9602bf9c5 from order book
+2025-06-15 13:13:41,792 - engine.order_book - INFO - Removing order from best bid level at price 30000.0
+2025-06-15 13:13:41,792 - engine.order_book - INFO - No bids left, best bid set to None
+2025-06-15 13:13:41,792 - engine.matching_engine - INFO - Removed filled buy order 55ddc575-f30d-4d27-be1b-ade9602bf9c5
+2025-06-15 13:13:41,794 - engine.order_book - INFO - Removing order 48e51a7a-4263-490b-a55c-2bf61eb6e126 from order book
+2025-06-15 13:13:41,794 - engine.order_book - INFO - Removing order from best ask level at price 30000.0
+2025-06-15 13:13:41,794 - engine.order_book - INFO - No asks left, best ask set to None
+2025-06-15 13:13:41,794 - engine.matching_engine - INFO - Added partially filled sell order 48e51a7a-4263-490b-a55c-2bf61eb6e126 back to order book
+2025-06-15 13:13:41,796 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': None, 'best_bid_quantity': None, 'best_ask': 30000.0, 'best_ask_quantity': 5.0, 'timestamp': '2025-06-15T07:43:41.796638'}
+2025-06-15 13:13:41,796 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': None, 'best_bid_quantity': None, 'best_ask': 30000.0, 'best_ask_quantity': 5.0, 'timestamp': '2025-06-15T07:43:41.796638'}
+2025-06-15 13:13:41,798 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [], 'asks': [{'price': '30000.0', 'quantity': '5.0', 'orders': [{'id': '48e51a7a-4263-490b-a55c-2bf61eb6e126', 'side': 'SELL', 'type': 'LIMIT', 'quantity': '5.0', 'filled_quantity': '5.0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:43:32.967226'}]}], 'timestamp': '2025-06-15T07:43:41.798655'}
+2025-06-15 13:13:53,402 - engine.matching_engine - INFO - Processing new order 64271b66-d8c1-4ccd-8dd9-e4fc32cc4584 of type OrderType.MARKET for BTC_USD
+2025-06-15 13:13:53,402 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:13:53,402 - engine.order_book - INFO - No asks left, best ask set to None
+2025-06-15 13:13:53,402 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:13:53,818 - engine.redis_persistence - INFO - Trade d6170c70-2676-485e-8257-1f407a04b90a saved
+2025-06-15 13:13:53,834 - engine.order_book - INFO - Removing order 64271b66-d8c1-4ccd-8dd9-e4fc32cc4584 from order book
+2025-06-15 13:13:53,834 - engine.order_book - WARNING - Order 64271b66-d8c1-4ccd-8dd9-e4fc32cc4584 not found in order book
+2025-06-15 13:13:53,834 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:14:37,073 - engine.matching_engine - INFO - Processing new order e50c099c-f08c-47ca-a9db-d33952a97277 of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:14:37,073 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:14:37,438 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:14:37,438 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 20000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:44:37.438726'}
+2025-06-15 13:14:37,438 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 20000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:44:37.438726'}
+2025-06-15 13:14:37,438 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '20000.0', 'quantity': '10.0', 'orders': [{'id': 'e50c099c-f08c-47ca-a9db-d33952a97277', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:44:37.073077'}]}], 'asks': [], 'timestamp': '2025-06-15T07:44:37.438726'}
+2025-06-15 13:14:50,502 - engine.matching_engine - INFO - Processing new order 5002173e-b8be-46c4-92be-24cc4e341c12 of type OrderType.IOC for BTC_USD
+2025-06-15 13:14:50,502 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:14:50,503 - engine.order_book - INFO - No bids left, best bid set to None
+2025-06-15 13:14:50,503 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:14:50,867 - engine.redis_persistence - INFO - Trade cf505c96-ec21-4b44-8778-a450151227db saved
+2025-06-15 13:14:50,867 - engine.order_book - INFO - Removing order e50c099c-f08c-47ca-a9db-d33952a97277 from order book
+2025-06-15 13:14:50,883 - engine.order_book - WARNING - Order e50c099c-f08c-47ca-a9db-d33952a97277 not found in order book
+2025-06-15 13:14:50,883 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:15:09,741 - engine.matching_engine - INFO - Processing new order 032597e1-75bc-46d3-8faa-f380d47fb97e of type OrderType.STOP_LOSS for BTC_USD
+2025-06-15 13:15:09,741 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:15:10,114 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:15:10,114 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': None, 'best_bid_quantity': None, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:45:10.114164'}
+2025-06-15 13:15:10,114 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': None, 'best_bid_quantity': None, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:45:10.114164'}
+2025-06-15 13:15:10,114 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [], 'asks': [], 'timestamp': '2025-06-15T07:45:10.114164'}
+2025-06-15 13:15:21,670 - engine.matching_engine - INFO - Processing new order 55107249-b21a-40b7-adc5-22cab61192de of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:15:21,671 - engine.matching_engine - INFO - Found 1 activated orders to process
+2025-06-15 13:15:21,671 - engine.matching_engine - INFO - Processing activated order 032597e1-75bc-46d3-8faa-f380d47fb97e
+2025-06-15 13:15:21,675 - engine.matching_engine - INFO - Generated 1 trades from activated order 032597e1-75bc-46d3-8faa-f380d47fb97e
+2025-06-15 13:15:21,676 - engine.matching_engine - INFO - Order 55107249-b21a-40b7-adc5-22cab61192de has no remaining quantity, skipping processing
+2025-06-15 13:15:21,676 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:15:22,098 - engine.redis_persistence - INFO - Trade 30440543-a726-4323-a986-e093b7e6a070 saved
+2025-06-15 13:15:22,099 - engine.order_book - INFO - Removing order 55107249-b21a-40b7-adc5-22cab61192de from order book
+2025-06-15 13:15:22,099 - engine.order_book - WARNING - Order 55107249-b21a-40b7-adc5-22cab61192de not found in order book
+2025-06-15 13:15:22,100 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:15:50,241 - engine.matching_engine - INFO - Processing new order cd0520a8-a599-4628-addd-1e6413d3663b of type OrderType.STOP_LIMIT for BTC_USD
+2025-06-15 13:15:50,243 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:15:50,637 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:15:50,638 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': None, 'best_bid_quantity': None, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:45:50.638754'}
+2025-06-15 13:15:50,638 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': None, 'best_bid_quantity': None, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:45:50.638754'}
+2025-06-15 13:15:50,639 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [], 'asks': [], 'timestamp': '2025-06-15T07:45:50.639698'}
+2025-06-15 13:16:11,712 - engine.matching_engine - INFO - Processing new order 16701ea3-37ef-46c2-bb28-d9348d88a807 of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:16:11,713 - engine.matching_engine - INFO - Found 1 activated orders to process
+2025-06-15 13:16:11,714 - engine.matching_engine - INFO - Processing activated order cd0520a8-a599-4628-addd-1e6413d3663b
+2025-06-15 13:16:11,714 - engine.matching_engine - INFO - Generated 0 trades from activated order cd0520a8-a599-4628-addd-1e6413d3663b
+2025-06-15 13:16:12,139 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:16:12,139 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 10000.0, 'best_bid_quantity': 30.0, 'best_ask': 15000.0, 'best_ask_quantity': 10.0, 'timestamp': '2025-06-15T07:46:12.139133'}
+2025-06-15 13:16:12,139 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 10000.0, 'best_bid_quantity': 30.0, 'best_ask': 15000.0, 'best_ask_quantity': 10.0, 'timestamp': '2025-06-15T07:46:12.139133'}
+2025-06-15 13:16:12,139 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '10000.0', 'quantity': '30.0', 'orders': [{'id': 'cd0520a8-a599-4628-addd-1e6413d3663b', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '30.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:45:50.241795'}]}], 'asks': [{'price': '15000.0', 'quantity': '10.0', 'orders': [{'id': '16701ea3-37ef-46c2-bb28-d9348d88a807', 'side': 'SELL', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:46:11.712609'}]}], 'timestamp': '2025-06-15T07:46:12.139133'}
+2025-06-15 13:16:25,018 - engine.matching_engine - INFO - Processing new order 37fabc2c-d5db-49a2-ac1c-b08f979d07d6 of type OrderType.MARKET for BTC_USD
+2025-06-15 13:16:25,018 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:16:25,018 - engine.order_book - INFO - No bids left, best bid set to None
+2025-06-15 13:16:25,426 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:16:25,827 - engine.redis_persistence - INFO - Trade 03783a4b-c762-4881-8885-77db8f7463a5 saved
+2025-06-15 13:16:25,827 - engine.order_book - INFO - Removing order cd0520a8-a599-4628-addd-1e6413d3663b from order book
+2025-06-15 13:16:25,828 - engine.order_book - WARNING - Order cd0520a8-a599-4628-addd-1e6413d3663b not found in order book
+2025-06-15 13:16:25,828 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:16:30,307 - engine.matching_engine - INFO - Processing new order 7f32c5c1-4e47-429b-8c85-0871c6e7fc12 of type OrderType.MARKET for BTC_USD
+2025-06-15 13:16:30,308 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:16:30,309 - engine.order_book - INFO - No asks left, best ask set to None
+2025-06-15 13:16:30,311 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:16:30,704 - engine.redis_persistence - INFO - Trade a4a82f41-30ca-432b-a71e-4f9789c98eaa saved
+2025-06-15 13:16:30,704 - engine.order_book - INFO - Removing order 7f32c5c1-4e47-429b-8c85-0871c6e7fc12 from order book
+2025-06-15 13:16:30,704 - engine.order_book - WARNING - Order 7f32c5c1-4e47-429b-8c85-0871c6e7fc12 not found in order book
+2025-06-15 13:16:30,704 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:19:02,032 - engine.matching_engine - INFO - Processing new order 9afcd78f-2edd-4338-bcfc-8d08264a8b7f of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:19:02,032 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:19:02,426 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:19:02,426 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 15000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:49:02.426307'}
+2025-06-15 13:19:02,426 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 15000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:49:02.426307'}
+2025-06-15 13:19:02,426 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '15000.0', 'quantity': '10.0', 'orders': [{'id': '9afcd78f-2edd-4338-bcfc-8d08264a8b7f', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:49:02.032752'}]}], 'asks': [], 'timestamp': '2025-06-15T07:49:02.426307'}
+2025-06-15 13:19:14,385 - engine.matching_engine - INFO - Processing new order b558942e-a57a-4def-8e8b-8e7b7133c0d7 of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:19:14,385 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:19:14,822 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:19:14,822 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 25.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:49:14.822803'}
+2025-06-15 13:19:14,822 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 25.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:49:14.822803'}
+2025-06-15 13:19:14,822 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '25000.0', 'quantity': '25.0', 'orders': [{'id': 'b558942e-a57a-4def-8e8b-8e7b7133c0d7', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '25.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:49:14.385955'}]}, {'price': '15000.0', 'quantity': '10.0', 'orders': [{'id': '9afcd78f-2edd-4338-bcfc-8d08264a8b7f', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:49:02.032752'}]}], 'asks': [], 'timestamp': '2025-06-15T07:49:14.822803'}
+2025-06-15 13:19:34,652 - engine.matching_engine - INFO - Processing new order 74b66c5f-0b9d-4f02-9b01-ed9f999aa67f of type OrderType.MARKET for BTC_USD
+2025-06-15 13:19:34,652 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:19:34,652 - engine.order_book - INFO - Updated best bid to price 15000.0 with 1 orders and total quantity 10.0
+2025-06-15 13:19:35,374 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:19:35,733 - engine.redis_persistence - INFO - Trade 9d254303-8591-45d7-b000-cf6735226322 saved
+2025-06-15 13:19:35,734 - engine.order_book - INFO - Removing order b558942e-a57a-4def-8e8b-8e7b7133c0d7 from order book
+2025-06-15 13:19:35,735 - engine.order_book - WARNING - Order b558942e-a57a-4def-8e8b-8e7b7133c0d7 not found in order book
+2025-06-15 13:19:35,735 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:19:55,156 - engine.matching_engine - INFO - Processing new order 45f7e6ad-be5e-48d9-bc5c-dea536b556f2 of type OrderType.MARKET for BTC_USD
+2025-06-15 13:19:55,157 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:19:55,158 - engine.order_book - INFO - Updated best bid quantity to 10.0 at price 15000.0
+2025-06-15 13:19:55,662 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:19:56,006 - engine.redis_persistence - INFO - Trade 79cac4a6-4759-4367-bb0e-aed4c1e1e31a saved
+2025-06-15 13:19:56,006 - engine.order_book - INFO - Removing order 9afcd78f-2edd-4338-bcfc-8d08264a8b7f from order book
+2025-06-15 13:19:56,006 - engine.order_book - INFO - Removing order from best bid level at price 15000.0
+2025-06-15 13:19:56,006 - engine.order_book - INFO - No bids left, best bid set to None
+2025-06-15 13:19:56,006 - engine.matching_engine - INFO - Added partially filled buy order 9afcd78f-2edd-4338-bcfc-8d08264a8b7f back to order book
+2025-06-15 13:19:56,006 - engine.order_book - INFO - Removing order 45f7e6ad-be5e-48d9-bc5c-dea536b556f2 from order book
+2025-06-15 13:19:56,006 - engine.order_book - WARNING - Order 45f7e6ad-be5e-48d9-bc5c-dea536b556f2 not found in order book
+2025-06-15 13:19:56,006 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 286, in _broadcast_updates
+    order_book.add_order(sell_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:20:36,505 - engine.matching_engine - INFO - Processing new order d0389e73-b263-4978-9cfe-d3f3074a611c of type OrderType.IOC for BTC_USD
+2025-06-15 13:20:36,505 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:20:36,505 - engine.order_book - INFO - No bids left, best bid set to None
+2025-06-15 13:20:36,513 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:20:36,861 - engine.redis_persistence - INFO - Trade d07051fa-f119-4471-abf9-edec2213697d saved
+2025-06-15 13:20:36,862 - engine.order_book - INFO - Removing order 9afcd78f-2edd-4338-bcfc-8d08264a8b7f from order book
+2025-06-15 13:20:36,863 - engine.order_book - WARNING - Order 9afcd78f-2edd-4338-bcfc-8d08264a8b7f not found in order book
+2025-06-15 13:20:36,863 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:20:55,683 - engine.matching_engine - INFO - Processing new order 22f44d1a-cf09-4509-bb3a-d654a5d5ba17 of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:20:55,685 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:20:56,054 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:20:56,054 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 100.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:50:56.054189'}
+2025-06-15 13:20:56,054 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 100.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:50:56.054189'}
+2025-06-15 13:20:56,054 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '25000.0', 'quantity': '100.0', 'orders': [{'id': '22f44d1a-cf09-4509-bb3a-d654a5d5ba17', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '100.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:50:55.683903'}]}], 'asks': [], 'timestamp': '2025-06-15T07:50:56.054189'}
+2025-06-15 13:21:28,689 - engine.matching_engine - INFO - Processing new order c8266cde-e51f-4662-863b-eee0cc58d66f of type OrderType.FOK for BTC_USD
+2025-06-15 13:21:28,690 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:21:29,102 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:21:29,102 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 100.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:51:29.102891'}
+2025-06-15 13:21:29,102 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 100.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:51:29.102891'}
+2025-06-15 13:21:29,102 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '25000.0', 'quantity': '100.0', 'orders': [{'id': '22f44d1a-cf09-4509-bb3a-d654a5d5ba17', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '100.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:50:55.683903'}]}], 'asks': [], 'timestamp': '2025-06-15T07:51:29.102891'}
+2025-06-15 13:21:42,437 - engine.matching_engine - INFO - Processing new order f950454f-160e-4614-8cb8-8f5ea88666b7 of type OrderType.FOK for BTC_USD
+2025-06-15 13:21:42,437 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:21:42,854 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:21:43,262 - engine.redis_persistence - INFO - Trade 00af53cf-0473-41d8-bf3b-df5be40d4e97 saved
+2025-06-15 13:21:43,262 - engine.order_book - INFO - Removing order 22f44d1a-cf09-4509-bb3a-d654a5d5ba17 from order book
+2025-06-15 13:21:43,273 - engine.order_book - INFO - Removing order from best bid level at price 25000.0
+2025-06-15 13:21:43,273 - engine.order_book - INFO - No bids left, best bid set to None
+2025-06-15 13:21:43,273 - engine.matching_engine - INFO - Added partially filled buy order 22f44d1a-cf09-4509-bb3a-d654a5d5ba17 back to order book
+2025-06-15 13:21:43,273 - engine.order_book - INFO - Removing order f950454f-160e-4614-8cb8-8f5ea88666b7 from order book
+2025-06-15 13:21:43,273 - engine.order_book - WARNING - Order f950454f-160e-4614-8cb8-8f5ea88666b7 not found in order book
+2025-06-15 13:21:43,273 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 286, in _broadcast_updates
+    order_book.add_order(sell_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:22:13,751 - engine.matching_engine - INFO - Processing new order 98adb1ec-ffbc-4958-9cc9-72c0b4c6bf13 of type OrderType.STOP_LIMIT for BTC_USD
+2025-06-15 13:22:13,752 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:22:14,163 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:22:14,163 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 50.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:52:14.163984'}
+2025-06-15 13:22:14,163 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 50.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:52:14.163984'}
+2025-06-15 13:22:14,163 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '25000.0', 'quantity': '50.0', 'orders': [{'id': '22f44d1a-cf09-4509-bb3a-d654a5d5ba17', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '50.0', 'filled_quantity': '50.0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:50:55.683903'}]}], 'asks': [], 'timestamp': '2025-06-15T07:52:14.163984'}
+2025-06-15 13:22:32,874 - engine.matching_engine - INFO - Processing new order aa15c65b-32b0-4ed8-b6d6-58c3db00f518 of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:22:32,874 - engine.matching_engine - INFO - Found 1 activated orders to process
+2025-06-15 13:22:32,874 - engine.matching_engine - INFO - Processing activated order 98adb1ec-ffbc-4958-9cc9-72c0b4c6bf13
+2025-06-15 13:22:32,874 - engine.matching_engine - INFO - Generated 0 trades from activated order 98adb1ec-ffbc-4958-9cc9-72c0b4c6bf13
+2025-06-15 13:22:33,257 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:22:33,264 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 50.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:52:33.264134'}
+2025-06-15 13:22:33,264 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 50.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:52:33.264134'}
+2025-06-15 13:22:33,264 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '25000.0', 'quantity': '50.0', 'orders': [{'id': '22f44d1a-cf09-4509-bb3a-d654a5d5ba17', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '50.0', 'filled_quantity': '50.0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:50:55.683903'}]}, {'price': '15000.0', 'quantity': '10.0', 'orders': [{'id': 'aa15c65b-32b0-4ed8-b6d6-58c3db00f518', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:52:32.874160'}]}, {'price': '10000.0', 'quantity': '10.0', 'orders': [{'id': '98adb1ec-ffbc-4958-9cc9-72c0b4c6bf13', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:52:13.751172'}]}], 'asks': [], 'timestamp': '2025-06-15T07:52:33.264134'}
+2025-06-15 13:23:06,914 - engine.matching_engine - INFO - Processing new order 443093d6-cdbf-4d09-86e4-6d983a33aaf7 of type OrderType.STOP_LOSS for BTC_USD
+2025-06-15 13:23:06,916 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:23:07,339 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:23:07,340 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 50.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:53:07.340885'}
+2025-06-15 13:23:07,340 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 50.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:53:07.340885'}
+2025-06-15 13:23:07,341 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '25000.0', 'quantity': '50.0', 'orders': [{'id': '22f44d1a-cf09-4509-bb3a-d654a5d5ba17', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '50.0', 'filled_quantity': '50.0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:50:55.683903'}]}, {'price': '15000.0', 'quantity': '10.0', 'orders': [{'id': 'aa15c65b-32b0-4ed8-b6d6-58c3db00f518', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:52:32.874160'}]}, {'price': '10000.0', 'quantity': '10.0', 'orders': [{'id': '98adb1ec-ffbc-4958-9cc9-72c0b4c6bf13', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:52:13.751172'}]}], 'asks': [], 'timestamp': '2025-06-15T07:53:07.341889'}
+2025-06-15 13:23:23,091 - engine.matching_engine - INFO - Processing new order 38a6e1e7-7676-4a5e-a28e-e4a4fe452fcf of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:23:23,091 - engine.matching_engine - INFO - Found 1 activated orders to process
+2025-06-15 13:23:23,091 - engine.matching_engine - INFO - Processing activated order 443093d6-cdbf-4d09-86e4-6d983a33aaf7
+2025-06-15 13:23:23,091 - engine.matching_engine - INFO - Generated 1 trades from activated order 443093d6-cdbf-4d09-86e4-6d983a33aaf7
+2025-06-15 13:23:23,091 - engine.matching_engine - INFO - Order 38a6e1e7-7676-4a5e-a28e-e4a4fe452fcf has no remaining quantity, skipping processing
+2025-06-15 13:23:23,463 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:23:23,869 - engine.redis_persistence - INFO - Trade 8e23e055-a234-4654-a29e-b51da5746355 saved
+2025-06-15 13:23:23,870 - engine.order_book - INFO - Removing order 38a6e1e7-7676-4a5e-a28e-e4a4fe452fcf from order book
+2025-06-15 13:23:23,871 - engine.order_book - WARNING - Order 38a6e1e7-7676-4a5e-a28e-e4a4fe452fcf not found in order book
+2025-06-15 13:23:23,871 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:23:56,674 - engine.matching_engine - INFO - Processing new order e01be681-b8fc-478a-9db3-4e82d18813d2 of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:23:56,675 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:23:57,022 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:23:57,022 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 50.0, 'best_ask': 50000.0, 'best_ask_quantity': 25.0, 'timestamp': '2025-06-15T07:53:57.022379'}
+2025-06-15 13:23:57,022 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 50.0, 'best_ask': 50000.0, 'best_ask_quantity': 25.0, 'timestamp': '2025-06-15T07:53:57.022379'}
+2025-06-15 13:23:57,022 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '25000.0', 'quantity': '50.0', 'orders': [{'id': '22f44d1a-cf09-4509-bb3a-d654a5d5ba17', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '50.0', 'filled_quantity': '50.0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:50:55.683903'}]}, {'price': '15000.0', 'quantity': '10.0', 'orders': [{'id': 'aa15c65b-32b0-4ed8-b6d6-58c3db00f518', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:52:32.874160'}]}, {'price': '10000.0', 'quantity': '10.0', 'orders': [{'id': '98adb1ec-ffbc-4958-9cc9-72c0b4c6bf13', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:52:13.751172'}]}], 'asks': [{'price': '50000.0', 'quantity': '25.0', 'orders': [{'id': 'e01be681-b8fc-478a-9db3-4e82d18813d2', 'side': 'SELL', 'type': 'LIMIT', 'quantity': '25.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:53:56.674552'}]}], 'timestamp': '2025-06-15T07:53:57.022379'}
+2025-06-15 13:26:53,877 - engine.matching_engine - INFO - Processing new order d6935ac8-4993-4ce2-933f-064bad0e1a34 of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:26:53,877 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:26:53,877 - engine.order_book - INFO - Updated best ask quantity to 25.0 at price 50000.0
+2025-06-15 13:26:54,464 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:26:55,084 - engine.redis_persistence - INFO - Trade 81c942a9-98c8-4207-8bb2-a63853e3818f saved
+2025-06-15 13:26:55,084 - engine.order_book - INFO - Removing order d6935ac8-4993-4ce2-933f-064bad0e1a34 from order book
+2025-06-15 13:26:55,084 - engine.order_book - INFO - Removing order from best bid level at price 60000.0
+2025-06-15 13:26:55,084 - engine.order_book - INFO - Updated best bid to price 25000.0 with 1 orders and total quantity 50.0
+2025-06-15 13:26:55,084 - engine.matching_engine - INFO - Removed filled buy order d6935ac8-4993-4ce2-933f-064bad0e1a34
+2025-06-15 13:26:55,084 - engine.order_book - INFO - Removing order e01be681-b8fc-478a-9db3-4e82d18813d2 from order book
+2025-06-15 13:26:55,084 - engine.order_book - INFO - Removing order from best ask level at price 50000.0
+2025-06-15 13:26:55,084 - engine.order_book - INFO - No asks left, best ask set to None
+2025-06-15 13:26:55,084 - engine.matching_engine - INFO - Added partially filled sell order e01be681-b8fc-478a-9db3-4e82d18813d2 back to order book
+2025-06-15 13:26:55,092 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 50.0, 'best_ask': 50000.0, 'best_ask_quantity': 15.0, 'timestamp': '2025-06-15T07:56:55.092761'}
+2025-06-15 13:26:55,092 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 50.0, 'best_ask': 50000.0, 'best_ask_quantity': 15.0, 'timestamp': '2025-06-15T07:56:55.092761'}
+2025-06-15 13:26:55,094 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '25000.0', 'quantity': '50.0', 'orders': [{'id': '22f44d1a-cf09-4509-bb3a-d654a5d5ba17', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '50.0', 'filled_quantity': '50.0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:50:55.683903'}]}, {'price': '15000.0', 'quantity': '10.0', 'orders': [{'id': 'aa15c65b-32b0-4ed8-b6d6-58c3db00f518', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:52:32.874160'}]}, {'price': '10000.0', 'quantity': '10.0', 'orders': [{'id': '98adb1ec-ffbc-4958-9cc9-72c0b4c6bf13', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:52:13.751172'}]}], 'asks': [{'price': '50000.0', 'quantity': '15.0', 'orders': [{'id': 'e01be681-b8fc-478a-9db3-4e82d18813d2', 'side': 'SELL', 'type': 'LIMIT', 'quantity': '15.0', 'filled_quantity': '10.0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:53:56.674552'}]}], 'timestamp': '2025-06-15T07:56:55.094387'}
+2025-06-15 13:27:20,631 - engine.matching_engine - INFO - Processing new order a6429b7b-b48d-446d-b417-54b6271b3831 of type OrderType.MARKET for BTC_USD
+2025-06-15 13:27:20,631 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:27:20,631 - engine.order_book - INFO - Updated best bid to price 15000.0 with 1 orders and total quantity 10.0
+2025-06-15 13:27:20,631 - engine.order_book - INFO - Updated best bid to price 10000.0 with 1 orders and total quantity 10.0
+2025-06-15 13:27:20,631 - engine.order_book - INFO - No bids left, best bid set to None
+2025-06-15 13:27:21,013 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:27:21,370 - engine.redis_persistence - INFO - Trade 78c3576b-e73d-4132-8a0a-35e18c60fdad saved
+2025-06-15 13:27:21,718 - engine.redis_persistence - INFO - Trade 92a9509f-fb7a-45ec-8be8-05e61f4a4f8b saved
+2025-06-15 13:27:22,055 - engine.redis_persistence - INFO - Trade 4e365713-0b9b-48c7-9f7c-ca95e54eb318 saved
+2025-06-15 13:27:22,055 - engine.order_book - INFO - Removing order 22f44d1a-cf09-4509-bb3a-d654a5d5ba17 from order book
+2025-06-15 13:27:22,055 - engine.order_book - WARNING - Order 22f44d1a-cf09-4509-bb3a-d654a5d5ba17 not found in order book
+2025-06-15 13:27:22,055 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:27:28,553 - engine.matching_engine - INFO - Processing new order 9291db7f-d70f-4cdd-8c14-e96db6598092 of type OrderType.MARKET for BTC_USD
+2025-06-15 13:27:28,555 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:27:28,556 - engine.order_book - INFO - No asks left, best ask set to None
+2025-06-15 13:27:28,556 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:27:28,974 - engine.redis_persistence - INFO - Trade 15f3bd8a-51df-41fb-94a8-32cfa3caa695 saved
+2025-06-15 13:27:28,974 - engine.order_book - INFO - Removing order 9291db7f-d70f-4cdd-8c14-e96db6598092 from order book
+2025-06-15 13:27:28,974 - engine.order_book - WARNING - Order 9291db7f-d70f-4cdd-8c14-e96db6598092 not found in order book
+2025-06-15 13:27:28,974 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:29:27,481 - engine.matching_engine - INFO - Processing new order 5c198bba-c1b7-4f2b-8540-259008da2212 of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:29:27,481 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:29:27,824 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:29:27,824 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 20000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:59:27.824202'}
+2025-06-15 13:29:27,824 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 20000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T07:59:27.824202'}
+2025-06-15 13:29:27,824 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '20000.0', 'quantity': '10.0', 'orders': [{'id': '5c198bba-c1b7-4f2b-8540-259008da2212', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T07:59:27.481107'}]}], 'asks': [], 'timestamp': '2025-06-15T07:59:27.824202'}
+2025-06-15 13:29:42,720 - engine.matching_engine - INFO - Processing new order 573b556e-e0ae-49d7-9912-c35bc0eba824 of type OrderType.MARKET for BTC_USD
+2025-06-15 13:29:42,721 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:29:42,721 - engine.order_book - INFO - No bids left, best bid set to None
+2025-06-15 13:29:42,722 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:29:43,054 - engine.redis_persistence - INFO - Trade b38da87b-23ff-4364-9838-6df69b7d7a9e saved
+2025-06-15 13:29:43,054 - engine.order_book - INFO - Removing order 5c198bba-c1b7-4f2b-8540-259008da2212 from order book
+2025-06-15 13:29:43,054 - engine.order_book - WARNING - Order 5c198bba-c1b7-4f2b-8540-259008da2212 not found in order book
+2025-06-15 13:29:43,068 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:30:08,184 - engine.matching_engine - INFO - Processing new order cd25af74-ae49-45f9-a375-6024b604b803 of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:30:08,184 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:30:08,539 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:30:08,539 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': None, 'best_bid_quantity': None, 'best_ask': 25000.0, 'best_ask_quantity': 10.0, 'timestamp': '2025-06-15T08:00:08.539780'}
+2025-06-15 13:30:08,539 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': None, 'best_bid_quantity': None, 'best_ask': 25000.0, 'best_ask_quantity': 10.0, 'timestamp': '2025-06-15T08:00:08.539780'}
+2025-06-15 13:30:08,539 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [], 'asks': [{'price': '25000.0', 'quantity': '10.0', 'orders': [{'id': 'cd25af74-ae49-45f9-a375-6024b604b803', 'side': 'SELL', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T08:00:08.184065'}]}], 'timestamp': '2025-06-15T08:00:08.539780'}
+2025-06-15 13:30:18,963 - engine.matching_engine - INFO - Processing new order c736a3fd-14a0-4fc8-bf93-ecb1f7842c8e of type OrderType.MARKET for BTC_USD
+2025-06-15 13:30:18,964 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:30:18,965 - engine.order_book - INFO - Updated best ask quantity to 10.0 at price 25000.0
+2025-06-15 13:30:19,359 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:30:19,728 - engine.redis_persistence - INFO - Trade 534747c8-32e6-4026-9d07-655b4ae6d32a saved
+2025-06-15 13:30:19,728 - engine.order_book - INFO - Removing order c736a3fd-14a0-4fc8-bf93-ecb1f7842c8e from order book
+2025-06-15 13:30:19,728 - engine.order_book - WARNING - Order c736a3fd-14a0-4fc8-bf93-ecb1f7842c8e not found in order book
+2025-06-15 13:30:19,728 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:30:33,273 - engine.matching_engine - INFO - Processing new order 085c0ed8-0e86-4584-83b9-ce3e2612a650 of type OrderType.MARKET for BTC_USD
+2025-06-15 13:30:33,273 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:30:33,273 - engine.order_book - INFO - No asks left, best ask set to None
+2025-06-15 13:30:33,273 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:30:33,737 - engine.redis_persistence - INFO - Trade c072d132-dade-4781-b882-b7d1fc10ba46 saved
+2025-06-15 13:30:33,737 - engine.order_book - INFO - Removing order 085c0ed8-0e86-4584-83b9-ce3e2612a650 from order book
+2025-06-15 13:30:33,738 - engine.order_book - WARNING - Order 085c0ed8-0e86-4584-83b9-ce3e2612a650 not found in order book
+2025-06-15 13:30:33,738 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:32:28,760 - engine.matching_engine - INFO - Processing new order 7e58f17b-c2b7-4767-8816-2b8e23b292fe of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:32:28,760 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:32:29,131 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:32:29,138 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T08:02:29.138261'}
+2025-06-15 13:32:29,139 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T08:02:29.138261'}
+2025-06-15 13:32:29,140 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '25000.0', 'quantity': '10.0', 'orders': [{'id': '7e58f17b-c2b7-4767-8816-2b8e23b292fe', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T08:02:28.760138'}]}], 'asks': [], 'timestamp': '2025-06-15T08:02:29.139237'}
+2025-06-15 13:32:43,856 - engine.matching_engine - INFO - Processing new order 140d4bfa-bd67-4dbc-bb2d-847c85e2f9a3 of type OrderType.MARKET for BTC_USD
+2025-06-15 13:32:43,857 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:32:43,858 - engine.order_book - INFO - No bids left, best bid set to None
+2025-06-15 13:32:43,859 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:32:44,220 - engine.redis_persistence - INFO - Trade db71cda7-ef93-4917-bba5-07252e66a438 saved
+2025-06-15 13:32:44,220 - engine.order_book - INFO - Removing order 7e58f17b-c2b7-4767-8816-2b8e23b292fe from order book
+2025-06-15 13:32:44,222 - engine.order_book - WARNING - Order 7e58f17b-c2b7-4767-8816-2b8e23b292fe not found in order book
+2025-06-15 13:32:44,222 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:33:07,785 - engine.matching_engine - INFO - Processing new order 824e1dd6-d8fd-42ba-a082-6ec01de272cc of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:33:07,787 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:33:08,218 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:33:08,218 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 15000.0, 'best_bid_quantity': 30.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T08:03:08.218845'}
+2025-06-15 13:33:08,218 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 15000.0, 'best_bid_quantity': 30.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T08:03:08.218845'}
+2025-06-15 13:33:08,218 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '15000.0', 'quantity': '30.0', 'orders': [{'id': '824e1dd6-d8fd-42ba-a082-6ec01de272cc', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '30.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T08:03:07.785996'}]}], 'asks': [], 'timestamp': '2025-06-15T08:03:08.218845'}
+2025-06-15 13:33:29,328 - engine.matching_engine - INFO - Processing new order 7cfaa471-2859-4ed9-a4f5-f7eebbb95fc3 of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:33:29,328 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:33:29,328 - engine.order_book - INFO - Updated best bid quantity to 30.0 at price 15000.0
+2025-06-15 13:33:29,712 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:33:30,068 - engine.redis_persistence - INFO - Trade 45a32ddc-dafa-4fdf-bde4-c88547b7aae4 saved
+2025-06-15 13:33:30,068 - engine.order_book - INFO - Removing order 824e1dd6-d8fd-42ba-a082-6ec01de272cc from order book
+2025-06-15 13:33:30,068 - engine.order_book - INFO - Removing order from best bid level at price 15000.0
+2025-06-15 13:33:30,068 - engine.order_book - INFO - No bids left, best bid set to None
+2025-06-15 13:33:30,068 - engine.matching_engine - INFO - Added partially filled buy order 824e1dd6-d8fd-42ba-a082-6ec01de272cc back to order book
+2025-06-15 13:33:30,068 - engine.order_book - INFO - Removing order 7cfaa471-2859-4ed9-a4f5-f7eebbb95fc3 from order book
+2025-06-15 13:33:30,068 - engine.order_book - INFO - Removing order from best ask level at price 15000.0
+2025-06-15 13:33:30,068 - engine.order_book - INFO - No asks left, best ask set to None
+2025-06-15 13:33:30,068 - engine.matching_engine - INFO - Removed filled sell order 7cfaa471-2859-4ed9-a4f5-f7eebbb95fc3
+2025-06-15 13:33:30,080 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 15000.0, 'best_bid_quantity': 20.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T08:03:30.080272'}
+2025-06-15 13:33:30,080 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 15000.0, 'best_bid_quantity': 20.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T08:03:30.080272'}
+2025-06-15 13:33:30,080 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '15000.0', 'quantity': '20.0', 'orders': [{'id': '824e1dd6-d8fd-42ba-a082-6ec01de272cc', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '20.0', 'filled_quantity': '10.0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T08:03:07.785996'}]}], 'asks': [], 'timestamp': '2025-06-15T08:03:30.080272'}
+2025-06-15 13:33:58,435 - engine.matching_engine - INFO - Processing new order 70a4dfbe-e4d0-4192-acd9-3282a3f70615 of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:33:58,436 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:33:58,843 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:33:58,843 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 30000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T08:03:58.843074'}
+2025-06-15 13:33:58,843 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 30000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T08:03:58.843074'}
+2025-06-15 13:33:58,843 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '30000.0', 'quantity': '10.0', 'orders': [{'id': '70a4dfbe-e4d0-4192-acd9-3282a3f70615', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T08:03:58.435023'}]}, {'price': '15000.0', 'quantity': '20.0', 'orders': [{'id': '824e1dd6-d8fd-42ba-a082-6ec01de272cc', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '20.0', 'filled_quantity': '10.0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T08:03:07.785996'}]}], 'asks': [], 'timestamp': '2025-06-15T08:03:58.843074'}
+2025-06-15 13:34:12,065 - engine.matching_engine - INFO - Processing new order f13ce522-a1f7-49b0-9660-d0371f2bbdc2 of type OrderType.MARKET for BTC_USD
+2025-06-15 13:34:12,065 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:34:12,065 - engine.order_book - INFO - Updated best bid to price 15000.0 with 1 orders and total quantity 20.0
+2025-06-15 13:34:12,065 - engine.order_book - INFO - No bids left, best bid set to None
+2025-06-15 13:34:12,065 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:34:12,429 - engine.redis_persistence - INFO - Trade eb5efdfc-9f15-490e-ac40-b5653d302ea3 saved
+2025-06-15 13:34:13,006 - engine.redis_persistence - INFO - Trade d9b496ba-170f-41cf-a827-60512c99ab87 saved
+2025-06-15 13:34:13,008 - engine.order_book - INFO - Removing order 70a4dfbe-e4d0-4192-acd9-3282a3f70615 from order book
+2025-06-15 13:34:13,008 - engine.order_book - WARNING - Order 70a4dfbe-e4d0-4192-acd9-3282a3f70615 not found in order book
+2025-06-15 13:34:13,008 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:34:34,537 - engine.matching_engine - INFO - Processing new order a6ba2934-87a1-4e9a-b02d-0b0ffff16680 of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:34:34,537 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:34:35,092 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:34:35,092 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': None, 'best_bid_quantity': None, 'best_ask': 15000.0, 'best_ask_quantity': 10.0, 'timestamp': '2025-06-15T08:04:35.092444'}
+2025-06-15 13:34:35,092 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': None, 'best_bid_quantity': None, 'best_ask': 15000.0, 'best_ask_quantity': 10.0, 'timestamp': '2025-06-15T08:04:35.092444'}
+2025-06-15 13:34:35,092 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [], 'asks': [{'price': '15000.0', 'quantity': '10.0', 'orders': [{'id': 'a6ba2934-87a1-4e9a-b02d-0b0ffff16680', 'side': 'SELL', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T08:04:34.537589'}]}], 'timestamp': '2025-06-15T08:04:35.092444'}
+2025-06-15 13:34:47,610 - engine.matching_engine - INFO - Processing new order 3004e5ff-6c82-4074-92a0-8f825b45e62e of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:34:47,610 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:34:47,610 - engine.order_book - INFO - No asks left, best ask set to None
+2025-06-15 13:34:47,967 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:34:48,308 - engine.redis_persistence - INFO - Trade 741ced83-2b12-4119-833c-4adb9f836e4b saved
+2025-06-15 13:34:48,308 - engine.order_book - INFO - Removing order 3004e5ff-6c82-4074-92a0-8f825b45e62e from order book
+2025-06-15 13:34:48,314 - engine.order_book - INFO - Removing order from best bid level at price 20000.0
+2025-06-15 13:34:48,314 - engine.order_book - INFO - No bids left, best bid set to None
+2025-06-15 13:34:48,314 - engine.matching_engine - INFO - Removed filled buy order 3004e5ff-6c82-4074-92a0-8f825b45e62e
+2025-06-15 13:34:48,315 - engine.order_book - INFO - Removing order a6ba2934-87a1-4e9a-b02d-0b0ffff16680 from order book
+2025-06-15 13:34:48,315 - engine.order_book - WARNING - Order a6ba2934-87a1-4e9a-b02d-0b0ffff16680 not found in order book
+2025-06-15 13:34:48,315 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 286, in _broadcast_updates
+    order_book.add_order(sell_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:34:59,931 - engine.matching_engine - INFO - Processing new order b2dac753-e80d-4a59-a9e7-53fc53268ffb of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:34:59,932 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:35:00,368 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:35:00,368 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 15000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T08:05:00.368766'}
+2025-06-15 13:35:00,368 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 15000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T08:05:00.368766'}
+2025-06-15 13:35:00,368 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '15000.0', 'quantity': '10.0', 'orders': [{'id': 'b2dac753-e80d-4a59-a9e7-53fc53268ffb', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T08:04:59.931204'}]}], 'asks': [], 'timestamp': '2025-06-15T08:05:00.368766'}
+2025-06-15 13:35:27,958 - engine.matching_engine - INFO - Processing new order e693b375-33bb-422d-85e1-778727b0a605 of type OrderType.IOC for BTC_USD
+2025-06-15 13:35:27,958 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:35:27,958 - engine.order_book - INFO - No bids left, best bid set to None
+2025-06-15 13:35:27,958 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:35:28,367 - engine.redis_persistence - INFO - Trade 2f5f7b7c-0508-4ab2-ba46-b8736b9be5af saved
+2025-06-15 13:35:28,369 - engine.order_book - INFO - Removing order b2dac753-e80d-4a59-a9e7-53fc53268ffb from order book
+2025-06-15 13:35:28,369 - engine.order_book - WARNING - Order b2dac753-e80d-4a59-a9e7-53fc53268ffb not found in order book
+2025-06-15 13:35:28,370 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:35:46,715 - engine.matching_engine - INFO - Processing new order 7f0d725c-0399-4cc0-af3d-854014d6cecf of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:35:46,716 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:35:47,258 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:35:47,258 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 20.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T08:05:47.258958'}
+2025-06-15 13:35:47,258 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 20.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T08:05:47.258958'}
+2025-06-15 13:35:47,258 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '25000.0', 'quantity': '20.0', 'orders': [{'id': '7f0d725c-0399-4cc0-af3d-854014d6cecf', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '20.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T08:05:46.715406'}]}], 'asks': [], 'timestamp': '2025-06-15T08:05:47.258958'}
+2025-06-15 13:36:09,286 - engine.matching_engine - INFO - Processing new order 9a251cda-5f7d-4715-a605-c3c94bd21bfb of type OrderType.FOK for BTC_USD
+2025-06-15 13:36:09,286 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:36:09,655 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:36:09,655 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 20.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T08:06:09.655561'}
+2025-06-15 13:36:09,655 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 20.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T08:06:09.655561'}
+2025-06-15 13:36:09,656 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '25000.0', 'quantity': '20.0', 'orders': [{'id': '7f0d725c-0399-4cc0-af3d-854014d6cecf', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '20.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T08:05:46.715406'}]}], 'asks': [], 'timestamp': '2025-06-15T08:06:09.656578'}
+2025-06-15 13:36:24,285 - engine.matching_engine - INFO - Processing new order 411952c0-9dc5-4dff-bade-669ad893d656 of type OrderType.FOK for BTC_USD
+2025-06-15 13:36:24,286 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:36:24,695 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:36:25,094 - engine.redis_persistence - INFO - Trade 33eafd82-1d18-4f6d-905f-14971e67c04b saved
+2025-06-15 13:36:25,096 - engine.order_book - INFO - Removing order 7f0d725c-0399-4cc0-af3d-854014d6cecf from order book
+2025-06-15 13:36:25,096 - engine.order_book - INFO - Removing order from best bid level at price 25000.0
+2025-06-15 13:36:25,096 - engine.order_book - INFO - No bids left, best bid set to None
+2025-06-15 13:36:25,098 - engine.matching_engine - INFO - Added partially filled buy order 7f0d725c-0399-4cc0-af3d-854014d6cecf back to order book
+2025-06-15 13:36:25,098 - engine.order_book - INFO - Removing order 411952c0-9dc5-4dff-bade-669ad893d656 from order book
+2025-06-15 13:36:25,098 - engine.order_book - WARNING - Order 411952c0-9dc5-4dff-bade-669ad893d656 not found in order book
+2025-06-15 13:36:25,101 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 286, in _broadcast_updates
+    order_book.add_order(sell_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 13:37:12,920 - engine.matching_engine - INFO - Processing new order 1c635ce4-8e05-4664-83d7-72ae5bf32edc of type OrderType.STOP_LIMIT for BTC_USD
+2025-06-15 13:37:12,920 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:37:13,328 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:37:13,328 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T08:07:13.328444'}
+2025-06-15 13:37:13,328 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 25000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T08:07:13.328444'}
+2025-06-15 13:37:13,328 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '25000.0', 'quantity': '10.0', 'orders': [{'id': '7f0d725c-0399-4cc0-af3d-854014d6cecf', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '10.0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T08:05:46.715406'}]}], 'asks': [], 'timestamp': '2025-06-15T08:07:13.328444'}
+2025-06-15 13:37:31,455 - engine.matching_engine - INFO - Processing new order db2fd7fd-5baa-4ae6-862a-d8fcf6d0615b of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:37:31,456 - engine.matching_engine - INFO - Found 1 activated orders to process
+2025-06-15 13:37:31,456 - engine.matching_engine - INFO - Processing activated order 1c635ce4-8e05-4664-83d7-72ae5bf32edc
+2025-06-15 13:37:31,458 - engine.matching_engine - INFO - Generated 0 trades from activated order 1c635ce4-8e05-4664-83d7-72ae5bf32edc
+2025-06-15 13:37:31,818 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:37:31,819 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 30000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T08:07:31.819263'}
+2025-06-15 13:37:31,820 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 30000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T08:07:31.819263'}
+2025-06-15 13:37:31,822 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '30000.0', 'quantity': '10.0', 'orders': [{'id': 'db2fd7fd-5baa-4ae6-862a-d8fcf6d0615b', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T08:07:31.455845'}]}, {'price': '25000.0', 'quantity': '10.0', 'orders': [{'id': '7f0d725c-0399-4cc0-af3d-854014d6cecf', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '10.0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T08:05:46.715406'}]}, {'price': '20000.0', 'quantity': '100.0', 'orders': [{'id': '1c635ce4-8e05-4664-83d7-72ae5bf32edc', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '100.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T08:07:12.920582'}]}], 'asks': [], 'timestamp': '2025-06-15T08:07:31.820224'}
+2025-06-15 13:37:59,461 - engine.matching_engine - INFO - Processing new order 8d58c828-4ed5-4693-a5a7-6b2388181542 of type OrderType.STOP_LOSS for BTC_USD
+2025-06-15 13:37:59,461 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 13:38:01,003 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:38:01,004 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': 30000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T08:08:01.004512'}
+2025-06-15 13:38:01,006 - engine.matching_engine - INFO - Updated BBO for BTC_USD: {'best_bid': 30000.0, 'best_bid_quantity': 10.0, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T08:08:01.004512'}
+2025-06-15 13:38:01,008 - engine.matching_engine - INFO - Pending orders for BTC_USD: {'bids': [{'price': '30000.0', 'quantity': '10.0', 'orders': [{'id': 'db2fd7fd-5baa-4ae6-862a-d8fcf6d0615b', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T08:07:31.455845'}]}, {'price': '25000.0', 'quantity': '10.0', 'orders': [{'id': '7f0d725c-0399-4cc0-af3d-854014d6cecf', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '10.0', 'filled_quantity': '10.0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T08:05:46.715406'}]}, {'price': '20000.0', 'quantity': '100.0', 'orders': [{'id': '1c635ce4-8e05-4664-83d7-72ae5bf32edc', 'side': 'BUY', 'type': 'LIMIT', 'quantity': '100.0', 'filled_quantity': '0', 'status': 'PARTIALLY_FILLED', 'timestamp': '2025-06-15T08:07:12.920582'}]}], 'asks': [], 'timestamp': '2025-06-15T08:08:01.007511'}
+2025-06-15 13:38:16,355 - engine.matching_engine - INFO - Processing new order 788653c0-1e2f-4036-ade3-3a058facda41 of type OrderType.LIMIT for BTC_USD
+2025-06-15 13:38:16,356 - engine.matching_engine - INFO - Found 1 activated orders to process
+2025-06-15 13:38:16,356 - engine.matching_engine - INFO - Processing activated order 8d58c828-4ed5-4693-a5a7-6b2388181542
+2025-06-15 13:38:16,358 - engine.matching_engine - INFO - Generated 1 trades from activated order 8d58c828-4ed5-4693-a5a7-6b2388181542
+2025-06-15 13:38:16,358 - engine.matching_engine - INFO - Order 788653c0-1e2f-4036-ade3-3a058facda41 has no remaining quantity, skipping processing
+2025-06-15 13:38:16,778 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 13:38:17,187 - engine.redis_persistence - INFO - Trade a766321c-384f-430f-9bfc-da646e1ee7f8 saved
+2025-06-15 13:38:17,187 - engine.order_book - INFO - Removing order 8d58c828-4ed5-4693-a5a7-6b2388181542 from order book
+2025-06-15 13:38:17,187 - engine.order_book - WARNING - Order 8d58c828-4ed5-4693-a5a7-6b2388181542 not found in order book
+2025-06-15 13:38:17,187 - engine.matching_engine - ERROR - Error broadcasting updates: 'NoneType' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 278, in _broadcast_updates
+    order_book.add_order(buy_order)
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\order_book.py", line 62, in add_order
+    logger.debug(f"Adding order {order.id} to order book for {order.symbol}")
+                                 ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'id'
+2025-06-15 14:06:37,586 - engine.redis_persistence - INFO - Redis connection pool initialized
+2025-06-15 14:06:37,594 - engine.matching_engine - INFO - MatchingEngine initialized
+2025-06-15 14:42:38,543 - engine.websocket_manager - INFO - Client 137b5805-b7bd-4971-b67d-d0a18d731360 connected to channel market_data_BTC_USD
+2025-06-15 14:42:38,552 - engine.matching_engine - INFO - Current BBO for BTC_USD: {'best_bid': None, 'best_bid_quantity': None, 'best_ask': None, 'best_ask_quantity': None, 'timestamp': '2025-06-15T09:12:38.552672'}
+2025-06-15 14:42:52,661 - engine.matching_engine - INFO - Processing new order 9ff83155-a391-4d83-9bee-65e22fd7c585 of type OrderType.LIMIT for BTC_USD
+2025-06-15 14:42:52,684 - engine.matching_engine - INFO - Found 0 activated orders to process
+2025-06-15 14:42:55,542 - engine.redis_persistence - INFO - Order book state saved for BTC_USD
+2025-06-15 14:42:55,547 - engine.matching_engine - ERROR - Error broadcasting updates: cannot import name 'broadcast_trade' from 'api.websocket' (C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\api\websocket.py)
+Traceback (most recent call last):
+  File "C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\engine\matching_engine.py", line 265, in _broadcast_updates
+    from api.websocket import broadcast_market_data, broadcast_trade, broadcast_order
+ImportError: cannot import name 'broadcast_trade' from 'api.websocket' (C:\Users\Krishnaansh Goel\OneDrive\Desktop\Projects\Goquant5\backend\api\websocket.py)
+2025-06-15 14:43:31,261 - engine.websocket_manager - INFO - Client 137b5805-b7bd-4971-b67d-d0a18d731360 disconnected from market_data_BTC_USD after 0:00:52.707109

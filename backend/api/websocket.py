@@ -127,23 +127,7 @@ async def trades_websocket(websocket: WebSocket, symbol: str):
     finally:
         await ws_manager.disconnect(client_id, f"trades_{symbol}")
 
-@router.websocket("/ws/orders/{symbol}")
-async def orders_websocket(websocket: WebSocket, symbol: str):
-    client_id = str(uuid4())
-    try:
-        await ws_manager.connect(websocket, client_id, f"orders_{symbol}")
-        
-        while True:
-            try:
-                data = await websocket.receive_text()
-                # Handle any client messages if needed
-            except WebSocketDisconnect:
-                break
-            except Exception as e:
-                logger.error(f"Error in orders websocket: {e}")
-                break
-    finally:
-        await ws_manager.disconnect(client_id, f"orders_{symbol}")
+
 
 @router.websocket("/ws/pending-orders/{symbol}")
 async def pending_orders_websocket(websocket: WebSocket, symbol: str):
@@ -214,16 +198,7 @@ async def pending_orders_websocket(websocket: WebSocket, symbol: str):
     finally:
         await ws_manager.disconnect(client_id, f"pending_orders_{symbol}")
 
-# Update matching engine broadcast methods to use WebSocket manager
-async def broadcast_market_data(symbol: str, data: dict, bbo: dict):
-    await ws_manager.broadcast_market_data(f"market_data_{symbol}", data, bbo)
 
-async def broadcast_trade(symbol: str, trade: dict):
-    await ws_manager.broadcast_trade(f"trades_{symbol}", trade)
-
-async def broadcast_order(symbol: str, order: dict, data: dict):
-    await ws_manager.broadcast_order(f"orders_{symbol}", order, data)
-    await ws_manager.broadcast_order(f"pending_orders_{symbol}", order, data)
 
 @router.websocket("/ws/test")
 async def test_socket(websocket: WebSocket):
@@ -231,3 +206,58 @@ async def test_socket(websocket: WebSocket):
     while True:
         await websocket.send_text("Hello from server")
         await asyncio.sleep(1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# @router.websocket("/ws/orders/{symbol}")
+# async def orders_websocket(websocket: WebSocket, symbol: str):
+#     client_id = str(uuid4())
+#     try:
+#         await ws_manager.connect(websocket, client_id, f"orders_{symbol}")
+        
+#         while True:
+#             try:
+#                 data = await websocket.receive_text()
+#                 # Handle any client messages if needed
+#             except WebSocketDisconnect:
+#                 break
+#             except Exception as e:
+#                 logger.error(f"Error in orders websocket: {e}")
+#                 break
+#     finally:
+#         await ws_manager.disconnect(client_id, f"orders_{symbol}")
+
+
+
+# Update matching engine broadcast methods to use WebSocket manager
+# async def broadcast_market_data(symbol: str, data: dict, bbo: dict):
+#     await ws_manager.broadcast_market_data(f"market_data_{symbol}", data, bbo)
+
+# async def broadcast_trade(symbol: str, trade: dict):
+#     await ws_manager.broadcast_trade(f"trades_{symbol}", trade)
+
+# async def broadcast_order(symbol: str, order: dict, data: dict):
+#     await ws_manager.broadcast_order(f"orders_{symbol}", order, data)
+#     await ws_manager.broadcast_order(f"pending_orders_{symbol}", order, data)
